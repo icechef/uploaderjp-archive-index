@@ -41,5 +41,10 @@
   "files": "https://archive.org/details/u1-getuploader-sample-archive",
   "warc": "https://archive.org/details/u1-getuploader-sample-warc-20261026"
  },
- "shutdown": "2026-11-25"
+ "shutdown": "2026-11-25",
+ "catalog": {
+  "spaces": 133981,
+  "with_title": 133919,
+  "terms": 160
+ }
 }

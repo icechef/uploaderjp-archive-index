@@ -21,7 +21,12 @@
     archived: [],
     atRows: [],                 // [key, status, files, mb]
     atMap: null,                // Map<key, row> once the big index is loaded
-    archivedKeys: new Set()
+    archivedKeys: new Set(),
+    catalog: [],                // [[key, title, files, mb, downloads], …]
+    catalogLoaded: false,
+    catalogPage: 0,
+    pageSize: 100,
+    cloud: []                   // [{ w, n }, …]
   };
 
   /* ---------------- i18n ---------------- */
@@ -69,10 +74,12 @@
       renderDelta();
       renderArchived();
       renderSearch(byId("search-input").value);
+      if (state.catalogLoaded) { renderCatalog(); renderCloud(); }
     }
   }
 
   function setLang(lang) {
+    // 目录与云图的文案也会随语言变化，applyI18n() 会自动重绘已加载的部分
     state.lang = window.I18N[lang] ? lang : "en";
     try { localStorage.setItem("archive-index-lang", state.lang); } catch (e) { /* private mode */ }
     applyI18n();
@@ -129,7 +136,8 @@
       [num(s.delta.count), "card.delta"],
       [size(s.delta.mb), "card.deltamb"],
       [num(s.archived.spaces), "card.arch"],
-      [num(s.mine.files), "card.mine"]
+      [num(s.mine.files), "card.mine"],
+      [num(s.catalog ? s.catalog.spaces : 0), "card.catalog"]
     ];
     byId("cards").innerHTML = cards.map(function (c) {
       return '<div class="card"><b>' + c[0] + "</b><span>" + t(c[1]) + "</span></div>";
@@ -269,6 +277,127 @@
       t("archived.hint", { shown: num(Math.min(ROW_LIMIT, rows.length)), n: num(rows.length) });
   }
 
+  /* ---------------- catalog ---------------- */
+
+  var CATALOG_PALETTE = ["#6cb6ff", "#7ed3a2", "#e5a54b", "#c792ea", "#ef6b6b", "#59c2d6"];
+
+  function loadCatalog() {
+    if (state.catalogLoaded || state.catalogLoading) return;
+    state.catalogLoading = true;
+    byId("catalog-status").textContent = t("catalog.loading", { n: "133,981" });
+    Promise.all([fetchJson("data/catalog.json"), fetchJson("data/cloud.json")])
+      .then(function (res) {
+        state.catalog = res[0].rows;
+        state.cloud = res[1].terms;
+        state.catalogLoaded = true;
+        state.catalogLoading = false;
+        populateSubdomains();
+        renderCloud();
+        renderCatalog();
+      })
+      .catch(function (err) {
+        state.catalogLoading = false;
+        byId("catalog-status").textContent = "catalog failed to load: " + err.message;
+      });
+  }
+
+  function populateSubdomains() {
+    var select = byId("catalog-sub");
+    if (select.options.length > 1) return;
+    var seen = {};
+    state.catalog.forEach(function (r) { seen[r[0].split("/")[0]] = (seen[r[0].split("/")[0]] || 0) + 1; });
+    Object.keys(seen).sort(function (a, b) { return seen[b] - seen[a]; }).forEach(function (sub) {
+      var opt = document.createElement("option");
+      opt.value = sub;
+      opt.textContent = sub + " (" + seen[sub].toLocaleString("en-US") + ")";
+      select.appendChild(opt);
+    });
+  }
+
+  function catalogFiltered() {
+    var query = (byId("catalog-query").value || "").trim().toLowerCase();
+    var terms = query ? query.split(/\s+/) : [];
+    var sub = byId("catalog-sub").value;
+    var onlyArchived = byId("catalog-archived").checked;
+    var onlyBig = byId("catalog-big").checked;
+    var sort = byId("catalog-sort").value;
+
+    var rows = state.catalog.filter(function (r) {
+      if (sub && r[0].indexOf(sub + "/") !== 0) return false;
+      if (onlyArchived && !state.archivedKeys.has(r[0])) return false;
+      if (onlyBig && Number(r[3]) < 100) return false;
+      if (terms.length) {
+        var haystack = (r[0] + " " + r[1]).toLowerCase();
+        for (var i = 0; i < terms.length; i++) if (haystack.indexOf(terms[i]) === -1) return false;
+      }
+      return true;
+    });
+
+    rows.sort(function (a, b) {
+      if (sort === "name") return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0;
+      if (sort === "size") return Number(b[3]) - Number(a[3]);
+      if (sort === "downloads") return Number(b[4]) - Number(a[4]);
+      return Number(b[2]) - Number(a[2]);
+    });
+    return rows;
+  }
+
+  function renderCatalog() {
+    var rows = catalogFiltered();
+    var pages = Math.max(1, Math.ceil(rows.length / state.pageSize));
+    if (state.catalogPage >= pages) state.catalogPage = 0;
+    var start = state.catalogPage * state.pageSize;
+    var slice = rows.slice(start, start + state.pageSize);
+
+    byId("catalog-table").innerHTML =
+      "<tr><th>" + t("th.space") + "</th><th>" + t("th.title") + '</th><th class="num">' + t("th.files") +
+      '</th><th class="num">' + t("th.size") + '</th><th class="num">' + t("th.downloads") + "</th><th>" + t("th.arch") + "</th></tr>" +
+      slice.map(function (r) {
+        var archived = state.archivedKeys.has(r[0]);
+        return "<tr><td>" + spaceLink(r[0]) + "</td>" +
+          '<td class="title-cell">' + (r[1] ? escapeHtml(r[1]) : '<span class="pill pill--idle">—</span>') + "</td>" +
+          '<td class="num">' + num(r[2]) + "</td>" +
+          '<td class="num">' + size(r[3]) + "</td>" +
+          '<td class="num">' + num(r[4]) + "</td>" +
+          "<td>" + pill(archived ? t("yes") : t("no"), archived ? "ok" : "idle") + "</td></tr>";
+      }).join("");
+
+    byId("catalog-status").textContent = rows.length
+      ? t("catalog.hint", { n: num(rows.length), a: num(start + 1), b: num(Math.min(start + state.pageSize, rows.length)) })
+      : t("catalog.empty");
+    byId("catalog-page").textContent = t("catalog.page", { p: num(state.catalogPage + 1), n: num(pages) });
+    byId("catalog-prev").disabled = state.catalogPage === 0;
+    byId("catalog-next").disabled = state.catalogPage >= pages - 1;
+  }
+
+  function renderCloud() {
+    var max = state.cloud.length ? state.cloud[0].n : 1;
+    byId("cloud-box").innerHTML = state.cloud.map(function (term, i) {
+      var scale = Math.sqrt(term.n / max);
+      var fontSize = (0.85 + scale * 1.75).toFixed(2);
+      var colour = CATALOG_PALETTE[i % CATALOG_PALETTE.length];
+      return '<a href="#catalog" class="cloud-term" data-term="' + escapeHtml(term.w) + '"' +
+        ' style="font-size:' + fontSize + "em;color:" + colour + ';margin:0 10px 4px 0;display:inline-block"' +
+        ' title="' + num(term.n) + '">' + escapeHtml(term.w) + "</a>";
+    }).join("");
+    byId("cloud-status").textContent = t("cloud.hint", { n: num(state.cloud.length) });
+    Array.prototype.forEach.call(document.querySelectorAll(".cloud-term"), function (el) {
+      el.addEventListener("click", function (ev) {
+        ev.preventDefault();
+        byId("catalog-query").value = el.dataset.term;
+        state.catalogPage = 0;
+        renderCatalog();
+        document.getElementById("catalog").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
   /* ---------------- boot ---------------- */
 
   function fetchJson(path) {
@@ -297,11 +426,25 @@
       renderSearch("");
       byId("search-input").focus();
     });
+    // catalog controls (data loads on first interaction)
+    byId("catalog-query").addEventListener("focus", loadCatalog);
+    byId("catalog-query").addEventListener("input", function () { loadCatalog(); state.catalogPage = 0; renderCatalog(); });
+    byId("catalog-sort").addEventListener("change", function () { state.catalogPage = 0; renderCatalog(); });
+    byId("catalog-sub").addEventListener("change", function () { state.catalogPage = 0; renderCatalog(); });
+    byId("catalog-archived").addEventListener("change", function () { state.catalogPage = 0; renderCatalog(); });
+    byId("catalog-big").addEventListener("change", function () { state.catalogPage = 0; renderCatalog(); });
+    byId("catalog-prev").addEventListener("click", function () { if (state.catalogPage > 0) { state.catalogPage--; renderCatalog(); } });
+    byId("catalog-next").addEventListener("click", function () { state.catalogPage++; renderCatalog(); });
     byId("delta-filter").addEventListener("input", renderDelta);
     byId("delta-mode").addEventListener("change", renderDelta);
     byId("archived-filter").addEventListener("input", renderArchived);
 
     if (presetQuery) byId("search-input").value = presetQuery;
+    var presetCatalog = new URLSearchParams(location.search).get("cat") || "";
+    if (location.hash === "#catalog" || location.hash === "#cloud" || presetCatalog) {
+      loadCatalog();
+      if (presetCatalog) byId("catalog-query").value = presetCatalog;
+    }
     applyI18n();
 
     Promise.all([

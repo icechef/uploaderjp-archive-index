@@ -145,3 +145,5 @@ ul.clean li { margin: 5px 0; }
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+td.title-cell { max-width: 420px; }

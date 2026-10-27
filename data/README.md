@@ -78,6 +78,37 @@ numbers (password-locked files, dead links, zero-byte entries).
 
 ---
 
+## `catalog.json` — the browsable list of non-empty spaces
+
+```jsonc
+{ "source": "catalog of non-empty spaces: 抢救优先级清单.csv (files>0) + titles from uploaderjp-archive.surge.sh/meta.json",
+  "fields": { "k": "space key sub/name", "t": "space title (ja)", "f": "files",
+              "mb": "size in MB", "dl": "download counter" },
+  "rows": [["uu/1456koro", "オシリスのお尻博物館", 20, 1642.1, 4760], …] }
+```
+
+* 133,981 rows — **every space that actually holds files** (spaces the crawl found empty are not here,
+  they remain in `at.json` so "does it exist" answers stay complete).
+* `t` is the title exactly as the space owner wrote it (median 8 characters, max 255); 62 rows have none.
+* Files / size / downloads are the values the community crawl recorded at its crawl time — they are a
+  snapshot, not live numbers.
+* ~7 MB. Loaded lazily: only when the catalog section is opened or `?cat=` is used.
+
+## `cloud.json` — term frequency for the word cloud
+
+```jsonc
+{ "source": "titles of non-empty spaces (this project)",
+  "terms": [{"w": "置き場", "n": 4706}, {"w": "倉庫", "n": 4205}, …] }
+```
+
+* 160 terms, `n` = number of space titles containing the term.
+* Built from a curated domain vocabulary (ゲーム / 素材 / 音源 / 立ち絵 / MUGEN / 東方 …) plus
+  katakana and kanji runs of 2–6 characters, minus a stop-word list.
+* The term list is a **pointer for discovery**, not a classification: a space can match several terms
+  and unmatched titles are not "unknown content".
+
+---
+
 ## CSV variants
 
 | File | Same as | Notes |

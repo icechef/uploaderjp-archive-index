@@ -17,6 +17,8 @@
       <div class="brand">uploader.jp archive index<small data-i18n="hd.sub">community index + supplement</small></div>
       <nav class="site-nav" aria-label="Sections">
         <a href="#search" data-i18n="nav.search">Search</a>
+        <a href="#catalog" data-i18n="nav.catalog">Catalog</a>
+        <a href="#cloud" data-i18n="nav.cloud">Word cloud</a>
         <a href="#delta" data-i18n="nav.delta">Missed spaces</a>
         <a href="#archived" data-i18n="nav.archived">Archived</a>
         <a href="#sample" data-i18n="nav.sample">Deep dive</a>
@@ -56,6 +58,40 @@
       <div class="scroll">
         <table id="search-table"></table>
       </div>
+    </section>
+
+    <section id="catalog" aria-labelledby="catalog-title">
+      <h2 id="catalog-title"><span data-i18n="catalog.title">Catalog of non-empty spaces</span><span class="tag" data-i18n="catalog.tag">133,981 spaces with files</span></h2>
+      <p class="lead" data-i18n="catalog.lead">Every space that actually holds files, with its title as the owner wrote it. Search matches both the space name and the title; sorted by file count by default.</p>
+      <div class="toolbar">
+        <label class="visually-hidden" for="catalog-query">Catalog search</label>
+        <input type="search" id="catalog-query" data-i18n-ph="catalog.ph" autocomplete="off">
+        <label class="visually-hidden" for="catalog-sort">Sort</label>
+        <select id="catalog-sort">
+          <option value="files" data-i18n="catalog.sort.files">By file count</option>
+          <option value="size" data-i18n="catalog.sort.size">By size</option>
+          <option value="downloads" data-i18n="catalog.sort.downloads">By downloads</option>
+          <option value="name" data-i18n="catalog.sort.name">By name</option>
+        </select>
+        <label class="visually-hidden" for="catalog-sub">Subdomain</label>
+        <select id="catalog-sub"><option value="" data-i18n="catalog.allsub">All subdomains</option></select>
+        <label class="pill" style="cursor:pointer"><input type="checkbox" id="catalog-archived" style="vertical-align:-2px"> <span data-i18n="catalog.onlyarch">archived only</span></label>
+        <label class="pill" style="cursor:pointer"><input type="checkbox" id="catalog-big" style="vertical-align:-2px"> <span data-i18n="catalog.onlybig">≥ 100 MB</span></label>
+      </div>
+      <p class="status" id="catalog-status" aria-live="polite"></p>
+      <div class="scroll" style="max-height:680px"><table id="catalog-table"></table></div>
+      <div class="toolbar" style="justify-content:center">
+        <button type="button" class="btn" id="catalog-prev" data-i18n="catalog.prev">Prev</button>
+        <span class="status" id="catalog-page"></span>
+        <button type="button" class="btn" id="catalog-next" data-i18n="catalog.next">Next</button>
+      </div>
+    </section>
+
+    <section id="cloud" aria-labelledby="cloud-title">
+      <h2 id="cloud-title"><span data-i18n="cloud.title">What is in these spaces</span><span class="tag" data-i18n="cloud.tag">terms from space titles</span></h2>
+      <p class="lead" data-i18n="cloud.lead">Term frequency across the titles of the 133,981 non-empty spaces. Click a term to filter the catalog. Bigger means more spaces.</p>
+      <div id="cloud-box" style="line-height:2.1;padding:10px 0" aria-live="polite"></div>
+      <p class="status" id="cloud-status"></p>
     </section>
 
     <section id="delta" aria-labelledby="delta-title">
