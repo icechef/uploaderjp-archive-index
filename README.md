@@ -51,6 +51,15 @@ alive**, so the gap is real rather than noise.
   nodes do **not** send `Access-Control-Allow-Origin`, so a direct IA URL is blocked by the browser;
   GitHub Pages does send it, hence the demo part in `data/`.
 
+### Known issues
+
+* `sample_18801.txt` inside `getuploader-sample-files.zip` has **12,918 bytes**, but the file is
+  **0 bytes at the source** (MD5 `d41d8cd98f00b204e9800998ecf8427e`); an HTML error page was saved
+  under that name during the crawl. It is 1 file out of 5,533 — the corrected empty file is in the
+  local working copy, and re-uploading it to the item is pending. Everything else in the zip was
+  verified against the source MD5 digest that each download page publishes: **5,614 of 5,614 checked
+  files match**.
+
 ### Archived artefacts on the Internet Archive
 
 * files + index: <https://archive.org/details/u1-getuploader-sample-archive>
@@ -101,6 +110,10 @@ the easiest to merge.
 
 维护者：[@icechef](https://github.com/icechef) · 纠错与补充请提 [GitHub Issue](https://github.com/icechef/uploaderjp-archive-index/issues)。
 
+**已知问题**：`getuploader-sample-files.zip` 里的 `sample_18801.txt` 是 12,918 字节，但源站该文件
+**实际为 0 字节**（MD5 `d41d8cd98f00b204e9800998ecf8427e`），抓取时把一个 HTML 错误页存成了这个文件名
+（5,533 个文件里的 1 个）。其余文件已用下载页公布的源站 MD5 逐个核对：**5,614 个全部一致**。
+
 许可：代码 MIT；**数据不重新授权**，来源与许可逐项见 [DATA-SOURCES.md](DATA-SOURCES.md)。
 
 ---
@@ -120,4 +133,8 @@ the easiest to merge.
 * 維持・整理: [@icechef](https://github.com/icechef)（訂正・追加は [GitHub Issues](https://github.com/icechef/uploaderjp-archive-index/issues) まで）
 * データ項目の説明は [data/README.md](data/README.md)
 * 出典・ライセンスは [DATA-SOURCES.md](DATA-SOURCES.md)
+* 既知の問題: `getuploader-sample-files.zip` 内の `sample_18801.txt` は 12,918 バイトですが、
+  ソース側は **0 バイト**（MD5 `d41d8cd98f00b204e9800998ecf8427e`）で、クロール時に HTML のエラー
+  ページがこの名前で保存されていました（5,533 ファイル中 1 件）。それ以外はダウンロードページに
+  記載の MD5 と照合済みで **5,614 件すべて一致**。
 * コードは MIT（[LICENSE](LICENSE)）、データは再ライセンスしていません
