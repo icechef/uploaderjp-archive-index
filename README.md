@@ -43,6 +43,14 @@ Maintained by [@icechef](https://github.com/icechef) · corrections and addition
 A 30-space sample of the delta was verified by hand: 25 alive / 3 → 404 / 2 anomalies ≈ **83% genuinely
 alive**, so the gap is real rather than noise.
 
+### How to replay
+
+* **Local (works today)**: download any `.warc.gz` part from the WARC item and drop it into
+  <https://replayweb.page/> — local files need no CORS. A 106-record demo part ships in `data/demo-sample.warc.gz`.
+* **Hosted playback** (`?source=<url>`) needs a CORS-enabled file host. Internet Archive's download
+  nodes do **not** send `Access-Control-Allow-Origin`, so a direct IA URL is blocked by the browser;
+  GitHub Pages does send it, hence the demo part in `data/`.
+
 ### Archived artefacts on the Internet Archive
 
 * files + index: <https://archive.org/details/u1-getuploader-sample-archive>

@@ -8,7 +8,7 @@ window.I18N = {
   en: {
     "view.cards": "Cards",
     "view.table": "Table",
-    "sample.cmd.replay": "Replay a WARC part in the browser",
+    "sample.cmd.replay": "Replay locally: download a .warc.gz part, then drag it into replayweb.page",
     "sample.cmd.lookup": "Resolve an original URL locally",
     "sample.link.warc": "WARC item (pages)",
     "sample.link.files": "Files item (zip + index)",
@@ -160,7 +160,7 @@ window.I18N = {
   zh: {
     "view.cards": "卡片",
     "view.table": "表格",
-    "sample.cmd.replay": "在浏览器里回放某个 WARC 分卷",
+    "sample.cmd.replay": "本地回放：下载任一 .warc.gz 分卷，拖进 replayweb.page",
     "sample.cmd.lookup": "本地按原网址反查",
     "sample.link.warc": "WARC item（页面）",
     "sample.link.files": "文件 item（zip + 索引）",
@@ -312,7 +312,7 @@ window.I18N = {
   ja: {
     "view.cards": "カード",
     "view.table": "表",
-    "sample.cmd.replay": "ブラウザで WARC 分巻を再生",
+    "sample.cmd.replay": "ローカル再生：.warc.gz を 1 本ダウンロードし、replayweb.page にドラッグ",
     "sample.cmd.lookup": "元 URL からローカルで照合",
     "sample.link.warc": "WARC item（ページ）",
     "sample.link.files": "ファイル item（zip + 索引）",
