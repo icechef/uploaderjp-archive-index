@@ -1,0 +1,45 @@
+{
+ "generated": "2026-10-27 08:19",
+ "at": {
+  "spaces": 239152,
+  "files": 2706154,
+  "mb": 9982089.0,
+  "source": "uploaderjp-archive.surge.sh"
+ },
+ "mine": {
+  "spaces": 2526,
+  "files": 102568,
+  "mb": 367576.3
+ },
+ "archived": {
+  "spaces": 506,
+  "files": 26922,
+  "mb": 83206.7
+ },
+ "delta": {
+  "count": 1630,
+  "files": 35471,
+  "mb": 159833.3,
+  "archived": 136,
+  "sample_size": 30,
+  "sample_alive": 25,
+  "sample_404": 3,
+  "sample_odd": 2
+ },
+ "sample": {
+  "files": 8394,
+  "locked": 2770,
+  "unlocked": 5624,
+  "warc_urls": 9748,
+  "warc_responses": 9905,
+  "warc_mb": 83,
+  "zip_files": 5533,
+  "php_404": 3,
+  "zero_byte": 84
+ },
+ "items": {
+  "files": "https://archive.org/details/u1-getuploader-sample-archive",
+  "warc": "https://archive.org/details/u1-getuploader-sample-warc-20261026"
+ },
+ "shutdown": "2026-11-25"
+}

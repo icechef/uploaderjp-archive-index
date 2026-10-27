@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this index or its numbers, please cite it as below."
+title: "uploader.jp / getuploader.com archive index (community index + supplement)"
+abstract: >-
+  An index of spaces on the Japanese file host uploader.jp / getuploader.com, which shuts down on
+  2026-11-25. It combines the community crawl (239,152 spaces) with 1,630 spaces that crawl misses,
+  records per-space file counts and sizes from each space's 統計 block, and marks which spaces have
+  been archived (506 spaces / 26,922 files / 83.2 GB) — including a page-level WARC archive of the
+  sample space (9,748 URLs).
+type: dataset
+version: "2026-10-27"
+date-released: "2026-10-27"
+license: MIT
+identifiers:
+  - type: url
+    value: "https://uploaderjp-archive.surge.sh/meta.json"
+    description: "Upstream community index used as the base list (not relicensed here)"
+keywords:
+  - web archiving
+  - uploader.jp
+  - getuploader
+  - file host
+  - WARC
+  - dataset catalogue

@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>uploader.jp archive index — community index + supplement</title>
+  <meta name="description" content="Index of uploader.jp / getuploader.com spaces: the community index plus 1,630 spaces it missed, with file counts, sizes and what has been archived.">
+  <meta property="og:title" content="uploader.jp / getuploader.com archive index">
+  <meta property="og:description" content="Community index of uploader.jp spaces, plus 1,630 spaces it missed and what has been archived before the 2026-11-25 shutdown.">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🗄️</text></svg>">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <div class="brand">uploader.jp archive index<small data-i18n="hd.sub">community index + supplement</small></div>
+      <nav class="site-nav" aria-label="Sections">
+        <a href="#search" data-i18n="nav.search">Search</a>
+        <a href="#delta" data-i18n="nav.delta">Missed spaces</a>
+        <a href="#archived" data-i18n="nav.archived">Archived</a>
+        <a href="#sample" data-i18n="nav.sample">Deep dive</a>
+        <a href="#method" data-i18n="nav.method">Method</a>
+      </nav>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="zh" aria-pressed="false">中文</button>
+        <button type="button" data-lang="ja" aria-pressed="false">日本語</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <h1 data-i18n="h1">The uploader.jp / getuploader.com archive index</h1>
+    <p class="lead" id="lead"></p>
+
+    <div class="cards" id="cards" aria-live="polite"></div>
+    <p class="status" id="search-status" aria-live="polite"></p>
+
+    <noscript>
+      <div class="note note--warn">
+        This page renders its tables with JavaScript. The underlying data is available as
+        <a href="data/at-supplement-delta.csv">CSV</a> and
+        <a href="data/at.json">JSON</a> in the <code>data/</code> directory.
+      </div>
+    </noscript>
+
+    <section id="search" aria-labelledby="search-title">
+      <h2 id="search-title"><span data-i18n="search.title">Look up a space</span><span class="tag" data-i18n="search.tag">community index + ours</span></h2>
+      <p class="lead" data-i18n="search.lead"></p>
+      <div class="toolbar">
+        <label class="visually-hidden" for="search-input" data-i18n="search.title">Search</label>
+        <input type="search" id="search-input" data-i18n-ph="search.ph" autocomplete="off" spellcheck="false">
+        <button type="button" class="btn" id="search-clear" data-i18n="search.clear">Clear</button>
+      </div>
+      <div class="scroll">
+        <table id="search-table"></table>
+      </div>
+    </section>
+
+    <section id="delta" aria-labelledby="delta-title">
+      <h2 id="delta-title"><span data-i18n="delta.title">Spaces missing from the existing index</span><span class="tag">1,630</span></h2>
+      <div class="note note--warn" data-i18n="delta.note"></div>
+      <div class="toolbar">
+        <label class="visually-hidden" for="delta-filter">Filter</label>
+        <input type="search" id="delta-filter" data-i18n-ph="delta.ph" autocomplete="off">
+        <label class="visually-hidden" for="delta-mode">Mode</label>
+        <select id="delta-mode">
+          <option value="all" data-i18n="delta.f.all">All</option>
+          <option value="arch" data-i18n="delta.f.arch">Archived by us</option>
+          <option value="noarch" data-i18n="delta.f.noarch">Not archived yet</option>
+        </select>
+        <a class="btn" href="data/at-supplement-delta.csv" download data-i18n="delta.csv">Download CSV</a>
+      </div>
+      <p class="status" id="delta-status" aria-live="polite"></p>
+      <div class="scroll">
+        <table id="delta-table"></table>
+      </div>
+    </section>
+
+    <section id="archived" aria-labelledby="archived-title">
+      <h2 id="archived-title"><span data-i18n="archived.title">What we archived</span><span class="tag">506 spaces</span></h2>
+      <p class="lead" id="archived-lead"></p>
+      <div class="toolbar">
+        <label class="visually-hidden" for="archived-filter">Filter</label>
+        <input type="search" id="archived-filter" data-i18n-ph="archived.ph" autocomplete="off">
+        <a class="btn" href="data/at-supplement-archived.csv" download data-i18n="archived.csv">Download CSV</a>
+      </div>
+      <p class="status" id="archived-status" aria-live="polite"></p>
+      <div class="scroll">
+        <table id="archived-table"></table>
+      </div>
+    </section>
+
+    <section id="sample" aria-labelledby="sample-title">
+      <h2 id="sample-title"><span data-i18n="sample.title">Deep dive: the sample space</span><span class="tag" data-i18n="sample.tag">complete archive</span></h2>
+      <div class="grid-2">
+        <div>
+          <div class="kv" id="sample-kv"></div>
+          <div class="note note--ok" data-i18n="sample.note"></div>
+        </div>
+        <div>
+          <h3 data-i18n="sample.replay">Replay / download</h3>
+          <pre><a id="link-warc-item" href="https://archive.org/details/u1-getuploader-sample-warc-20261026" target="_blank" rel="noopener noreferrer">WARC item (pages)</a>
+<a id="link-files-item" href="https://archive.org/details/u1-getuploader-sample-archive" target="_blank" rel="noopener noreferrer">files item (zip + index)</a>
+
+# replay a WARC part in the browser
+https://replayweb.page/?source=https://archive.org/download/
+  u1-getuploader-sample-warc-20261026/&lt;part&gt;.warc.gz
+
+# resolve an original URL locally
+grep "download/1234" cdx_offsets.jsonl   # → offset/length, then seek</pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="method" aria-labelledby="method-title">
+      <h2 id="method-title" data-i18n="method.title">Method, gaps and caveats</h2>
+      <div class="grid-2">
+        <div>
+          <h3 data-i18n="method.how">How this was built</h3>
+          <ul class="clean" data-i18n-list="method.how.list"></ul>
+        </div>
+        <div>
+          <h3 data-i18n="method.gaps">Known gaps</h3>
+          <ul class="clean" data-i18n-list="method.gaps.list"></ul>
+        </div>
+      </div>
+      <div class="note" id="credits"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p id="foot-built"></p>
+      <p>
+        <span data-i18n="foot.data">Data</span>:
+        <a href="data/at-supplement-delta.csv">at-supplement-delta.csv</a> ·
+        <a href="data/at-supplement-archived.csv">at-supplement-archived.csv</a> ·
+        <a href="data/at.json">at.json</a> ·
+        <a href="data/summary.json">summary.json</a>
+      </p>
+      <p><a href="DATA-SOURCES.md" data-i18n="source.note">Sources and licences</a></p>
+    </div>
+  </footer>
+
+  <script src="assets/i18n.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>

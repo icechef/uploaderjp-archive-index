@@ -1,0 +1,17 @@
+# Normalise line endings across platforms (the page is served as-is by GitHub Pages).
+* text=auto eol=lf
+
+*.html text eol=lf
+*.css  text eol=lf
+*.js   text eol=lf
+*.md   text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.csv  text eol=lf
+
+# Generated data: keep out of diffs to keep reviews readable.
+data/at.json          -diff linguist-generated
+data/delta.json       -diff linguist-generated
+data/archived.json    -diff linguist-generated
+data/*.csv            -diff linguist-generated

@@ -1,0 +1,16 @@
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+
+# Local tooling
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+
+# Local scratch
+*.log
+tmp/

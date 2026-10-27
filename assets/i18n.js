@@ -1,0 +1,292 @@
+/* uploader.jp archive index — UI strings (en / zh / ja)
+ *
+ * Every key used by index.html (data-i18n, data-i18n-ph, data-i18n-list)
+ * and by assets/app.js must exist in all three dictionaries.
+ * Placeholders use {name} and are filled by app.js#t().
+ */
+window.I18N = {
+  en: {
+    "meta.title": "uploader.jp archive index — community index + 1,630 spaces it missed",
+    "meta.desc": "Index of uploader.jp / getuploader.com spaces: the community index plus 1,630 spaces it missed, with file counts, sizes and what has been archived.",
+    "hd.sub": "community index + supplement",
+
+    "nav.search": "Search",
+    "nav.delta": "Missed spaces",
+    "nav.archived": "Archived",
+    "nav.sample": "Deep dive",
+    "nav.method": "Method",
+
+    "h1": "The uploader.jp / getuploader.com archive index",
+    "lead": "The community index covers {at} spaces. We found {delta} more it missed, scanned {mine} of them, and archived {arch} spaces ({archfiles} files / {archmb}) before the service shuts down on {date}.",
+
+    "card.at": "spaces in the community index",
+    "card.atmb": "its reported size",
+    "card.delta": "spaces the index missed",
+    "card.deltamb": "known size of those",
+    "card.arch": "spaces we archived",
+    "card.mine": "files in spaces we scanned",
+
+    "search.title": "Look up a space",
+    "search.tag": "community index + ours",
+    "search.lead": "Type a space name, a subdomain (uu, ux, u1…) or a full URL. Results show the file count and size from the community index, whether the index missed that space, and whether we archived it.",
+    "search.ph": "e.g. mugenShigaraki, ux/genryu_sai, https://uu.getuploader.com/lras/",
+    "search.clear": "Clear",
+    "search.loading": "loading the community index ({n} spaces)…",
+    "search.ready": "index ready — {n} spaces",
+    "search.none": "no match — try just the space name, or a subdomain prefix",
+    "search.hits": "{n} match(es)",
+
+    "th.space": "space",
+    "th.status": "status",
+    "th.files": "files",
+    "th.size": "size",
+    "th.inat": "in community index",
+    "th.arch": "archived by us",
+    "th.downloads": "downloads",
+
+    "yes": "yes",
+    "no": "no",
+
+    "delta.title": "Spaces missing from the existing index",
+    "delta.note": "Found through search engines, wiki link-lists and shared attachments. A 30-space sample was verified by hand: 25 alive, 3 → 404, 2 anomalies — about 83% genuinely alive, so this gap is real. Sorted by size where known.",
+    "delta.ph": "filter by space name or subdomain…",
+    "delta.f.all": "All",
+    "delta.f.arch": "Archived by us",
+    "delta.f.noarch": "Not archived yet",
+    "delta.csv": "Download CSV",
+    "delta.hint": "showing {shown} of {n} — the full list is in the CSV",
+
+    "archived.title": "What we archived",
+    "archived.lead": "File bytes for {n} spaces are stored on the Internet Archive ({files} files, {mb}), together with a page-level WARC archive of the sample space ({warc} URLs).",
+    "archived.ph": "filter by space name or subdomain…",
+    "archived.csv": "Download CSV",
+    "archived.hint": "showing {shown} of {n}",
+
+    "sample.title": "Deep dive: the sample space",
+    "sample.tag": "complete archive",
+    "sample.replay": "Replay / download",
+    "sample.note": "Every detail page and list page is in the WARC, so an original URL resolves to the archived page. The file bytes are not inside the WARC (a download needs a POST token) — they are in the zip.",
+    "sample.files": "files listed",
+    "sample.locked": "password-locked (not downloaded)",
+    "sample.unlocked": "downloadable",
+    "sample.zip": "files inside the zip",
+    "sample.warc": "unique URLs in the WARC",
+    "sample.resp": "responses recorded",
+    "sample.mb": "WARC size",
+    "sample.php": "php files 404 at the source",
+    "sample.zero": "zero-byte files",
+
+    "method.title": "Method, gaps and caveats",
+    "method.how": "How this was built",
+    "method.how.list": [
+      "The base list is the community index (uploaderjp-archive.surge.sh); spaces are also enumerated from search engines, wiki link-lists and shared attachments.",
+      "Each space's file count and disk usage are read from the 統計 block at the bottom of the space's own page — the only place the totals exist.",
+      "Scanning and downloading go through a real browser session (CDP): the site sits behind Cloudflare and the download path needs a POST token.",
+      "Pages are captured as WARC (9,748 unique URLs / 9,905 responses) with WARC-Target-URI on every record, plus a CDX index carrying offsets.",
+      "Wayback snapshots of the original URLs are requested through Save Page Now; the per-file detail layer is still running."
+    ],
+    "method.gaps": "Known gaps",
+    "method.gaps.list": [
+      "We archived 506 of the 2,526 spaces we scanned; the rest is metadata only.",
+      "Inside the sample space: 2,770 of 8,394 files are password-locked (no download possible); 3 .php files return 404 at the source; 84 files are 0 bytes by design.",
+      "Wayback had snapshots for only ~11% of the per-file detail pages before we started (sample of 36 CDX lookups).",
+      "A single snapshot in October 2026 — uploads made between then and the shutdown are not covered.",
+      "The content is Japanese and mostly game mods / assets / audio; this is a file host, not a text archive."
+    ],
+    "method.credits": "Data credit: the base index is the community crawl published at uploaderjp-archive.surge.sh ({at} spaces); this page re-hosts a derived subset and adds what that index missed, plus our own archiving results. The service shuts down on {date}.",
+    "source.note": "Sources and licences",
+
+    "foot.built": "Static page — no tracking, no build step. Generated {gen}.",
+    "foot.data": "Data"
+  },
+
+  zh: {
+    "meta.title": "uploader.jp 存档索引 — 社群索引 + 它漏掉的 1,630 个空间",
+    "meta.desc": "uploader.jp / getuploader.com 空间索引：社群索引，加上它漏掉的 1,630 个空间，附文件数、容量与存档情况。",
+    "hd.sub": "社群索引 + 补充",
+
+    "nav.search": "查询",
+    "nav.delta": "遗漏空间",
+    "nav.archived": "已存档",
+    "nav.sample": "深入个案",
+    "nav.method": "方法",
+
+    "h1": "uploader.jp / getuploader.com 存档索引",
+    "lead": "社群索引收录了 {at} 个空间。我们另外找到它漏掉的 {delta} 个，扫描了其中 {mine} 个，并在服务关闭（{date}）前把 {arch} 个空间（{archfiles} 个文件 / {archmb}）真正存了下来。",
+
+    "card.at": "社群索引收录的空间",
+    "card.atmb": "索引自报的容量",
+    "card.delta": "索引漏掉的空间",
+    "card.deltamb": "这些空间的已知容量",
+    "card.arch": "我们已存档的空间",
+    "card.mine": "已扫描空间的文件数",
+
+    "search.title": "查询某个空间",
+    "search.tag": "社群索引 + 我方数据",
+    "search.lead": "输入空间名、子域（uu / ux / u1…）或完整网址。结果会列出社群索引里的文件数与容量、该空间是否为索引漏掉，以及我们是否已存档。",
+    "search.ph": "例如 mugenShigaraki、ux/genryu_sai、https://uu.getuploader.com/lras/",
+    "search.clear": "清空",
+    "search.loading": "正在载入社群索引（{n} 个空间）…",
+    "search.ready": "索引就绪 — {n} 个空间",
+    "search.none": "没有匹配 — 试试只输入空间名，或子域前缀",
+    "search.hits": "命中 {n} 条",
+
+    "th.space": "空间",
+    "th.status": "状态",
+    "th.files": "文件数",
+    "th.size": "容量",
+    "th.inat": "社群索引",
+    "th.arch": "我方存档",
+    "th.downloads": "下载数",
+
+    "yes": "是",
+    "no": "否",
+
+    "delta.title": "社群索引里没有的空间",
+    "delta.note": "通过搜索引擎、wiki 链接页、分享附件发现。抽 30 个手工验证：25 个存活 / 3 个 404 / 2 个异常 —— 约 83% 真实存活，说明遗漏是真实存在的。已知容量的按容量排序。",
+    "delta.ph": "按空间名或子域筛选…",
+    "delta.f.all": "全部",
+    "delta.f.arch": "我方已存档",
+    "delta.f.noarch": "尚未存档",
+    "delta.csv": "下载 CSV",
+    "delta.hint": "显示 {shown} / {n} 条 —— 完整清单见 CSV",
+
+    "archived.title": "我们已存档的空间",
+    "archived.lead": "{n} 个空间的文件本体已存到 Internet Archive（{files} 个文件 / {mb}），另外对 sample 空间做了整站页面级 WARC 存档（{warc} 个 URL）。",
+    "archived.ph": "按空间名或子域筛选…",
+    "archived.csv": "下载 CSV",
+    "archived.hint": "显示 {shown} / {n} 条",
+
+    "sample.title": "深入个案：sample 空间",
+    "sample.tag": "完整存档",
+    "sample.replay": "回放 / 下载",
+    "sample.note": "每个详情页、列表页都在 WARC 里，所以原网址可以还原到当时的页面。文件本体不在 WARC 里（下载需要 POST token），在 zip 里。",
+    "sample.files": "清单文件数",
+    "sample.locked": "需密码（未下载）",
+    "sample.unlocked": "可直接下载",
+    "sample.zip": "zip 内文件数",
+    "sample.warc": "WARC 唯一 URL",
+    "sample.resp": "记录响应条数",
+    "sample.mb": "WARC 体积",
+    "sample.php": "源站 404 的 php",
+    "sample.zero": "0 字节文件",
+
+    "method.title": "方法、缺口与限制",
+    "method.how": "怎么做的",
+    "method.how.list": [
+      "基础清单来自社群索引（uploaderjp-archive.surge.sh）；另外用搜索引擎、wiki 链接页、分享附件枚举。",
+      "每个空间的文件数与容量取自该空间首页底部的「統計」区块 —— 那是唯一有汇总数字的地方。",
+      "扫描与下载都走真实浏览器会话（CDP）：站点在 Cloudflare 后面，且下载需要 POST token。",
+      "页面存成 WARC（9,748 个唯一 URL / 9,905 条响应），每条记录都带 WARC-Target-URI，并生成带偏移量的 CDX 索引。",
+      "原网址的 Wayback 快照通过 Save Page Now 提交；详情页那一层仍在跑。"
+    ],
+    "method.gaps": "已知缺口",
+    "method.gaps.list": [
+      "扫描了 2,526 个空间，实际只下载了 506 个，其余只有元数据。",
+      "sample 空间内：8,394 个文件里 2,770 个需要密码（无法下载）；3 个 .php 源站 404；84 个是源站本来就 0 字节。",
+      "开工前 Wayback 对详情页的历史快照覆盖只有约 11%（抽样 36 次 CDX 查询）。",
+      "2026 年 10 月的单次快照 —— 之后到关站前新增的上传不在其中。",
+      "内容是日文，以游戏 MOD / 素材 / 音源为主；这是文件托管站，不是文字存档。"
+    ],
+    "method.credits": "数据来源说明：基础索引是 uploaderjp-archive.surge.sh 公布的社群抓取结果（{at} 个空间），本页重新托管其派生子集，并补充该索引漏掉的部分与我方存档成果。服务将于 {date} 关闭。",
+    "source.note": "数据来源与许可",
+
+    "foot.built": "纯静态页面，无追踪、无构建步骤。生成于 {gen}。",
+    "foot.data": "数据"
+  },
+
+  ja: {
+    "meta.title": "uploader.jp アーカイブ索引 — コミュニティ索引 + 未収録 1,630 スペース",
+    "meta.desc": "uploader.jp / getuploader.com のスペース索引。コミュニティ索引に加え、そこに無い 1,630 スペースのファイル数・容量・保存状況を掲載。",
+    "hd.sub": "コミュニティ索引 + 補遺",
+
+    "nav.search": "検索",
+    "nav.delta": "未収録スペース",
+    "nav.archived": "保存済み",
+    "nav.sample": "詳細",
+    "nav.method": "方法",
+
+    "h1": "uploader.jp / getuploader.com アーカイブ索引",
+    "lead": "コミュニティ索引は {at} スペースを収録しています。索引に無い {delta} スペースを追加で発見し、うち {mine} を走査、サービス終了（{date}）までに {arch} スペース（{archfiles} ファイル / {archmb}）を実際に保存しました。",
+
+    "card.at": "コミュニティ索引の収録数",
+    "card.atmb": "索引の自己申告容量",
+    "card.delta": "索引に無いスペース",
+    "card.deltamb": "その既知容量",
+    "card.arch": "保存したスペース",
+    "card.mine": "走査したスペースのファイル数",
+
+    "search.title": "スペースを検索",
+    "search.tag": "コミュニティ索引 + 独自データ",
+    "search.lead": "スペース名・サブドメイン（uu / ux / u1…）・URL を入力してください。索引のファイル数と容量、索引に無いスペースかどうか、保存済みかどうかを表示します。",
+    "search.ph": "例: mugenShigaraki、ux/genryu_sai、https://uu.getuploader.com/lras/",
+    "search.clear": "クリア",
+    "search.loading": "コミュニティ索引を読み込み中（{n} スペース）…",
+    "search.ready": "索引の準備完了 — {n} スペース",
+    "search.none": "該当なし — スペース名だけ、またはサブドメインでお試しください",
+    "search.hits": "{n} 件",
+
+    "th.space": "スペース",
+    "th.status": "状態",
+    "th.files": "ファイル数",
+    "th.size": "容量",
+    "th.inat": "コミュニティ索引",
+    "th.arch": "保存済み",
+    "th.downloads": "ダウンロード数",
+
+    "yes": "はい",
+    "no": "いいえ",
+
+    "delta.title": "既存索引に無いスペース",
+    "delta.note": "検索エンジン・wiki のリンク集・共有添付から発見。30 件を手作業で検証（25 生存 / 3 が 404 / 2 異常）＝約 83% が実在。欠落は実在します。容量が判明しているものは容量順。",
+    "delta.ph": "スペース名・サブドメインで絞り込み…",
+    "delta.f.all": "すべて",
+    "delta.f.arch": "保存済み",
+    "delta.f.noarch": "未保存",
+    "delta.csv": "CSV をダウンロード",
+    "delta.hint": "{shown} / {n} 件を表示 — 全件は CSV にあります",
+
+    "archived.title": "保存したスペース",
+    "archived.lead": "{n} スペースのファイル本体を Internet Archive に保存しました（{files} ファイル / {mb}）。さらに sample スペースはページ単位の WARC として完全保存（{warc} URL）。",
+    "archived.ph": "スペース名・サブドメインで絞り込み…",
+    "archived.csv": "CSV をダウンロード",
+    "archived.hint": "{shown} / {n} 件を表示",
+
+    "sample.title": "詳細: sample スペース",
+    "sample.tag": "完全保存",
+    "sample.replay": "再生 / ダウンロード",
+    "sample.note": "詳細ページも一覧ページも WARC に入っているため、元の URL から当時のページを復元できます。ファイル本体は WARC には入りません（POST トークンが必要）— zip の中にあります。",
+    "sample.files": "一覧のファイル数",
+    "sample.locked": "パスワード付き（未取得）",
+    "sample.unlocked": "ダウンロード可",
+    "sample.zip": "zip 内のファイル数",
+    "sample.warc": "WARC のユニーク URL",
+    "sample.resp": "記録した応答数",
+    "sample.mb": "WARC サイズ",
+    "sample.php": "ソース側 404 の php",
+    "sample.zero": "0 バイトのファイル",
+
+    "method.title": "方法・欠落・注意点",
+    "method.how": "作製方法",
+    "method.how.list": [
+      "基礎リストはコミュニティ索引（uploaderjp-archive.surge.sh）。加えて検索エンジン・wiki のリンク集・共有添付から列挙。",
+      "各スペースのファイル数と容量は、スペース自身のページ下部にある「統計」ブロックから取得（合計が載る唯一の場所）。",
+      "走査とダウンロードは実ブラウザのセッション（CDP）経由。サイトは Cloudflare の背後にあり、ダウンロードには POST トークンが必要。",
+      "ページは WARC として保存（9,748 ユニーク URL / 9,905 応答）。各レコードに WARC-Target-URI を付け、オフセット付き CDX も生成。",
+      "元 URL の Wayback 保存は Save Page Now で申請。詳細ページ層は現在も進行中。"
+    ],
+    "method.gaps": "既知の欠落",
+    "method.gaps.list": [
+      "走査した 2,526 スペースのうち実際に保存できたのは 506。残りはメタデータのみ。",
+      "sample スペース内: 8,394 ファイル中 2,770 はパスワード付き（ダウンロード不可）、3 つの .php はソース側 404、84 は元から 0 バイト。",
+      "着手前、Wayback の詳細ページのスナップショットは約 11% のみ（CDX 36 件の標本）。",
+      "2026 年 10 月の単一スナップショット。以降、終了までの新規アップロードは含まれません。",
+      "内容は日本語のゲーム MOD・素材・音源が中心。ファイルホストでありテキストアーカイブではありません。"
+    ],
+    "method.credits": "データ出典: 基礎索引は uploaderjp-archive.surge.sh が公開しているコミュニティのクロール結果（{at} スペース）。本ページはその派生子集合を再ホストし、欠落分と当方の保存結果を追加したものです。サービスは {date} に終了します。",
+    "source.note": "出典とライセンス",
+
+    "foot.built": "静的ページ。トラッキング・ビルド工程なし。生成 {gen}。",
+    "foot.data": "データ"
+  }
+};

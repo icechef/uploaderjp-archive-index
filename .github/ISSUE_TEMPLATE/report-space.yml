@@ -1,0 +1,43 @@
+name: Report a space or a correction
+description: A space is missing, a file count is wrong, or a link is dead.
+title: "[data] "
+labels: ["data"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks — corrections with the site's own numbers are the easiest to merge.
+        The number comes from the `統計` block at the bottom of a space's page
+        (`ディスク X MB / 1500 MB (N%)` and `ファイル N ファイル`).
+  - type: input
+    id: url
+    attributes:
+      label: Space URL
+      placeholder: https://ux.getuploader.com/example/
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What is wrong?
+      options:
+        - The space is missing from the index
+        - The file count is wrong
+        - The size is wrong
+        - The status is wrong (alive / 404 / password-locked)
+        - The link is dead
+        - Something else
+    validations:
+      required: true
+  - type: input
+    id: numbers
+    attributes:
+      label: Numbers from the space page (if applicable)
+      placeholder: "ファイル 123 ファイル / ディスク 456.7 MB / 1500.0 MB (30%)"
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Screenshot, archive.org link, or how you found the space. Please say when you checked.
+    validations:
+      required: false
