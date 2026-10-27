@@ -81,15 +81,17 @@ numbers (password-locked files, dead links, zero-byte entries).
 ## `catalog.json` — the browsable list of non-empty spaces
 
 ```jsonc
-{ "source": "catalog of non-empty spaces: 抢救优先级清单.csv (files>0) + titles from uploaderjp-archive.surge.sh/meta.json",
+{ "source": "non-empty spaces: 抢救优先级清单.csv (files>0, community index) + 我方全量空间统计清单.csv (files>0, index misses) + titles from uploaderjp-archive.surge.sh/meta.json",
   "fields": { "k": "space key sub/name", "t": "space title (ja)", "f": "files",
               "mb": "size in MB", "dl": "download counter" },
   "rows": [["uu/1456koro", "オシリスのお尻博物館", 20, 1642.1, 4760], …] }
 ```
 
-* 133,981 rows — **every space that actually holds files** (spaces the crawl found empty are not here,
-  they remain in `at.json` so "does it exist" answers stay complete).
-* `t` is the title exactly as the space owner wrote it (median 8 characters, max 255); 62 rows have none.
+* 135,545 rows — **every space that actually holds files**: 133,981 from the community index plus
+  1,564 that index misses (found by this project's scan). Spaces the crawl found empty are not here;
+  they remain in `at.json` so "does it exist" answers stay complete.
+* `t` is the title exactly as the space owner wrote it (median 8 characters, max 255); 62 indexed rows
+  have none, and the 1,564 spaces the index misses have no known title (shown as `—`).
 * Files / size / downloads are the values the community crawl recorded at its crawl time — they are a
   snapshot, not live numbers.
 * ~7 MB. Loaded lazily: only when the catalog section is opened or `?cat=` is used.

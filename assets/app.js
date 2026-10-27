@@ -1,33 +1,53 @@
 /* uploader.jp archive index — page logic
  *
  * Data contracts (see data/README.md):
- *   data/summary.json   { at, mine, archived, delta, sample, items, shutdown, generated }
+ *   data/summary.json   { at, mine, archived, delta, sample, items, shutdown, generated, catalog }
  *   data/at.json        { source, fields, rows: [[key, status, files, size_mb], …] }
  *   data/delta.json     { source, fields, rows: [{ k, u, f, mb, st, ar }, …] }
  *   data/archived.json  { source, fields, rows: [{ k, u, f, mb, dl, st }, …] }
+ *   data/catalog.json   { source, fields, rows: [[key, title, files, size_mb, downloads], …] }
+ *   data/cloud.json     { source, terms: [{ w, n }, …] }
  *
+ * All tables share one renderer: click a header to sort, pager below the table.
  * Everything is client-side; no build step, no dependencies, no tracking.
  */
 (function () {
   "use strict";
 
-  var ROW_LIMIT = 500;          // rows rendered per table (full data stays in the CSV)
-  var SEARCH_LIMIT = 200;       // rows rendered for search results
+  /* ---------------- state ---------------- */
 
   var state = {
     lang: "en",
     summary: null,
-    delta: [],
-    archived: [],
     atRows: [],                 // [key, status, files, mb]
-    atMap: null,                // Map<key, row> once the big index is loaded
+    atMap: null,                // Map<key, row>
+    delta: [],                  // { k, u, f, mb, st, ar }
+    archived: [],               // { k, u, f, mb, dl, st }
     archivedKeys: new Set(),
-    catalog: [],                // [[key, title, files, mb, downloads], …]
+    catalog: [],                // [key, title, files, mb, downloads]
     catalogLoaded: false,
-    catalogPage: 0,
-    pageSize: 100,
-    cloud: []                   // [{ w, n }, …]
+    catalogLoading: false,
+    cloud: [],
+    cloudLoading: false,
+    tables: {}                  // name → { page, size, sort, dir }
   };
+
+  var TABLE_DEFAULTS = {
+    search:   { page: 0, size: 50,  sort: "files", dir: -1 },
+    catalog:  { page: 0, size: 100, sort: "files", dir: -1 },
+    delta:    { page: 0, size: 100, sort: "mb",    dir: -1 },
+    archived: { page: 0, size: 100, sort: "mb",    dir: -1 }
+  };
+
+  var CLOUD_COLOURS = ["#6cb6ff", "#7ed3a2", "#e5a54b", "#c792ea", "#ef6b6b", "#59c2d6"];
+
+  function tableState(name) {
+    if (!state.tables[name]) {
+      var d = TABLE_DEFAULTS[name];
+      state.tables[name] = { page: d.page, size: d.size, sort: d.sort, dir: d.dir };
+    }
+    return state.tables[name];
+  }
 
   /* ---------------- i18n ---------------- */
 
@@ -71,15 +91,15 @@
       renderSample();
       renderProse();
       renderFooter();
+      renderSearch();
       renderDelta();
       renderArchived();
-      renderSearch(byId("search-input").value);
-      if (state.catalogLoaded) { renderCatalog(); renderCloud(); }
+      if (state.cloud.length) renderCloud();
+      if (state.catalogLoaded) renderCatalog();
     }
   }
 
   function setLang(lang) {
-    // 目录与云图的文案也会随语言变化，applyI18n() 会自动重绘已加载的部分
     state.lang = window.I18N[lang] ? lang : "en";
     try { localStorage.setItem("archive-index-lang", state.lang); } catch (e) { /* private mode */ }
     applyI18n();
@@ -101,19 +121,114 @@
     return mb.toFixed(1) + " MB";
   }
 
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
   function spaceLink(key) {
-    var parts = key.split("/");
+    var parts = String(key).split("/");
     var sub = parts.shift();
     var name = parts.join("/");
     return '<a class="mono" href="https://' + sub + '.getuploader.com/' + name +
-      '/" target="_blank" rel="noopener noreferrer">' + key + "</a>";
+      '/" target="_blank" rel="noopener noreferrer">' + escapeHtml(key) + "</a>";
   }
 
   function pill(text, kind) {
     return '<span class="pill pill--' + (kind || "idle") + '">' + text + "</span>";
   }
 
-  /* ---------------- renderers ---------------- */
+  function yesNo(flag) {
+    return pill(flag ? t("yes") : t("no"), flag ? "ok" : "idle");
+  }
+
+  /* ---------------- generic table: sortable header + pager ---------------- */
+
+  function compare(records, key, dir) {
+    return records.slice().sort(function (a, b) {
+      var av = a[key], bv = b[key];
+      if (key === "k" || key === "title" || key === "status") {
+        av = String(av || ""); bv = String(bv || "");
+        return dir * (av < bv ? -1 : av > bv ? 1 : 0);
+      }
+      return dir * ((Number(av) || 0) - (Number(bv) || 0));
+    });
+  }
+
+  /** columns: [{ key, label, num?, cls?, cell(record) → html }] */
+  function renderTable(name, records, columns, emptyText) {
+    var st = tableState(name);
+    var sorted = compare(records, st.sort, st.dir);
+    var pages = Math.max(1, Math.ceil(sorted.length / st.size));
+    if (st.page > pages - 1) st.page = pages - 1;
+    if (st.page < 0) st.page = 0;
+    var start = st.page * st.size;
+    var slice = sorted.slice(start, start + st.size);
+
+    var head = "<tr>" + columns.map(function (col) {
+      var isSorted = st.sort === col.key;
+      return '<th class="sortable' + (isSorted ? " sorted" : "") + (col.num ? " num" : "") +
+        '" data-table="' + name + '" data-key="' + col.key + '" title="' + t("pager.sort") + '">' +
+        col.label + '<span class="sort-ind">' + (isSorted ? (st.dir === 1 ? "▲" : "▼") : "↕") + "</span></th>";
+    }).join("") + "</tr>";
+
+    var body = slice.map(function (rec) {
+      return "<tr>" + columns.map(function (col) {
+        return '<td class="' + (col.num ? "num" : "") + (col.cls ? " " + col.cls : "") + '">' +
+          col.cell(rec) + "</td>";
+      }).join("") + "</tr>";
+    }).join("");
+
+    byId(name + "-table").innerHTML = head + (sorted.length ? body :
+      '<tr><td colspan="' + columns.length + '"><span class="status">' + emptyText + "</span></td></tr>");
+
+    var pager = byId(name + "-pager");
+    if (!pager) return;
+    if (sorted.length <= st.size) { pager.innerHTML = ""; return; }
+    pager.innerHTML =
+      '<button type="button" data-pager="' + name + '" data-act="first" ' + (st.page === 0 ? "disabled" : "") + ">«</button>" +
+      '<button type="button" data-pager="' + name + '" data-act="prev" ' + (st.page === 0 ? "disabled" : "") + ">‹ " + t("pager.prev") + "</button>" +
+      '<span class="pager-info">' + t("pager.info", {
+        p: num(st.page + 1), n: num(pages), total: num(sorted.length)
+      }) + "</span>" +
+      '<button type="button" data-pager="' + name + '" data-act="next" ' + (st.page >= pages - 1 ? "disabled" : "") + ">" + t("pager.next") + " ›</button>" +
+      '<button type="button" data-pager="' + name + '" data-act="last" ' + (st.page >= pages - 1 ? "disabled" : "") + ">»</button>";
+  }
+
+  function bindTableControls() {
+    document.addEventListener("click", function (ev) {
+      var th = ev.target.closest("th.sortable");
+      if (th) {
+        var st = tableState(th.dataset.table);
+        if (st.sort === th.dataset.key) st.dir = -st.dir;
+        else {
+          st.sort = th.dataset.key;
+          st.dir = (th.dataset.key === "k" || th.dataset.key === "title" || th.dataset.key === "status") ? 1 : -1;
+        }
+        st.page = 0;
+        rerender(th.dataset.table);
+        return;
+      }
+      var btn = ev.target.closest("button[data-pager]");
+      if (!btn) return;
+      var ts = tableState(btn.dataset.pager);
+      if (btn.dataset.act === "first") ts.page = 0;
+      if (btn.dataset.act === "prev") ts.page = Math.max(0, ts.page - 1);
+      if (btn.dataset.act === "next") ts.page += 1;
+      if (btn.dataset.act === "last") ts.page = 1e9;      // clamped by renderTable
+      rerender(btn.dataset.pager);
+    });
+  }
+
+  function rerender(name) {
+    if (name === "search") renderSearch();
+    else if (name === "catalog") renderCatalog();
+    else if (name === "delta") renderDelta();
+    else if (name === "archived") renderArchived();
+  }
+
+  /* ---------------- summary sections ---------------- */
 
   function renderLead() {
     var s = state.summary;
@@ -137,8 +252,10 @@
       [size(s.delta.mb), "card.deltamb"],
       [num(s.archived.spaces), "card.arch"],
       [num(s.mine.files), "card.mine"],
-      [num(s.catalog ? s.catalog.spaces : 0), "card.catalog"]
+      [s.catalog ? num(s.catalog.spaces) : "—", "card.catalog"]
     ];
+    var tag = byId("catalog-tag");
+    if (tag) tag.textContent = t("catalog.tag", { n: num(s.catalog ? s.catalog.spaces : 0) });
     byId("cards").innerHTML = cards.map(function (c) {
       return '<div class="card"><b>' + c[0] + "</b><span>" + t(c[1]) + "</span></div>";
     }).join("");
@@ -172,157 +289,121 @@
       mb: size(s.archived.mb),
       warc: num(s.sample.warc_urls)
     });
-    byId("credits").textContent = t("method.credits", {
-      at: num(s.at.spaces),
-      date: s.shutdown
-    });
+    byId("credits").textContent = t("method.credits", { at: num(s.at.spaces), date: s.shutdown });
   }
 
   function renderFooter() {
     byId("foot-built").textContent = t("foot.built", { gen: state.summary.generated });
   }
 
-  function renderSearch(query) {
-    var status = byId("search-status");
-    var needle = (query || "").trim().toLowerCase();
-    var rows = [];
+  /* ---------------- search (community index + delta) ---------------- */
 
-    if (needle.length >= 2) {
-      var terms = needle.split(/\s+/);
-      var pool = state.atRows.length ? state.atRows : state.delta.map(function (d) {
-        return [d.k, d.st, d.f, d.mb];
-      });
-      for (var i = 0; i < pool.length && rows.length < SEARCH_LIMIT; i++) {
-        var key = pool[i][0];
-        if (terms.every(function (term) { return key.indexOf(term) !== -1; })) rows.push(pool[i]);
+  function searchRecords() {
+    var needle = (byId("search-input").value || "").trim().toLowerCase();
+    if (needle.length < 2) return [];
+    var terms = needle.split(/\s+/);
+    var out = [];
+    var pool = state.atRows.length ? state.atRows : state.delta.map(function (d) {
+      return [d.k, d.st, d.f, d.mb];
+    });
+    pool.forEach(function (row) {
+      var key = String(row[0]);
+      if (terms.every(function (term) { return key.indexOf(term) !== -1; })) {
+        out.push({ k: key, status: row[1] || "", files: row[2], mb: row[3] });
       }
-      // spaces our delta found but the community index lacks
-      for (var j = 0; j < state.delta.length && rows.length < SEARCH_LIMIT; j++) {
-        var d = state.delta[j];
-        if (rows.some(function (r) { return r[0] === d.k; })) continue;
-        if (terms.every(function (term) { return d.k.indexOf(term) !== -1; })) {
-          rows.push([d.k, d.st, d.f, d.mb]);
+    });
+    state.delta.forEach(function (d) {
+      if (out.some(function (r) { return r.k === d.k; })) return;
+      if (terms.every(function (term) { return d.k.indexOf(term) !== -1; })) {
+        out.push({ k: d.k, status: d.st || "", files: d.f, mb: d.mb });
+      }
+    });
+    return out;
+  }
+
+  function renderSearch() {
+    var records = searchRecords();
+    var columns = [
+      { key: "k", label: t("th.space"), cell: function (r) { return spaceLink(r.k); } },
+      { key: "status", label: t("th.status"), cell: function (r) { return pill(r.status || "—"); } },
+      { key: "files", label: t("th.files"), num: true, cell: function (r) { return num(r.files); } },
+      { key: "mb", label: t("th.size"), num: true, cell: function (r) { return size(r.mb); } },
+      {
+        key: "inIndex", label: t("th.inindex"), cell: function (r) {
+          if (!state.atMap) return pill("…", "idle");
+          return yesNo(state.atMap.has(r.k));
+        }
+      },
+      {
+        key: "archived", label: t("th.arch"), cell: function (r) {
+          return yesNo(state.archivedKeys.has(r.k));
         }
       }
-    }
+    ];
+    renderTable("search", records, columns, t("search.none"));
 
-    var head = "<tr><th>" + t("th.space") + "</th><th>" + t("th.status") + '</th>' +
-      '<th class="num">' + t("th.files") + '</th><th class="num">' + t("th.size") + "</th>" +
-      "<th>" + t("th.inat") + "</th><th>" + t("th.arch") + "</th></tr>";
-
-    byId("search-table").innerHTML = head + rows.map(function (row) {
-      var key = row[0];
-      var inIndex = state.atMap ? state.atMap.has(key) : null;
-      var archived = state.archivedKeys.has(key);
-      return "<tr><td>" + spaceLink(key) + "</td>" +
-        "<td>" + pill(row[1] || "—") + "</td>" +
-        '<td class="num">' + num(row[2]) + "</td>" +
-        '<td class="num">' + size(row[3]) + "</td>" +
-        "<td>" + (inIndex === null ? pill("…", "idle") : pill(inIndex ? t("yes") : t("no"), inIndex ? "ok" : "new")) + "</td>" +
-        "<td>" + pill(archived ? t("yes") : t("no"), archived ? "ok" : "idle") + "</td></tr>";
-    }).join("");
-
-    if (needle.length < 2) {
-      status.textContent = state.atMap
-        ? t("search.ready", { n: num(state.atRows.length) })
-        : t("search.loading", { n: num(state.summary ? state.summary.at.spaces : 0) });
-    } else {
-      status.textContent = t("search.hits", { n: num(rows.length) }) +
-        (rows.length ? "" : " — " + t("search.none"));
-    }
-  }
-
-  function renderDelta() {
-    var query = (byId("delta-filter").value || "").toLowerCase();
-    var mode = byId("delta-mode").value;
-    var rows = state.delta.filter(function (d) {
-      if (query && d.k.indexOf(query) === -1) return false;
-      if (mode === "arch") return d.ar;
-      if (mode === "noarch") return !d.ar;
-      return true;
-    });
-
-    byId("delta-table").innerHTML =
-      "<tr><th>" + t("th.space") + '</th><th class="num">' + t("th.files") +
-      '</th><th class="num">' + t("th.size") + "</th><th>" + t("th.status") + "</th><th>" + t("th.arch") + "</th></tr>" +
-      rows.slice(0, ROW_LIMIT).map(function (d) {
-        return "<tr><td>" + spaceLink(d.k) + "</td>" +
-          '<td class="num">' + num(d.f) + "</td>" +
-          '<td class="num">' + (d.mb === null ? "—" : size(d.mb)) + "</td>" +
-          "<td>" + pill(d.st || "—") + "</td>" +
-          "<td>" + pill(d.ar ? t("yes") : t("no"), d.ar ? "ok" : "idle") + "</td></tr>";
-      }).join("");
-
-    byId("delta-status").textContent =
-      t("delta.hint", { shown: num(Math.min(ROW_LIMIT, rows.length)), n: num(rows.length) });
-  }
-
-  function renderArchived() {
-    var query = (byId("archived-filter").value || "").toLowerCase();
-    var rows = state.archived.filter(function (a) {
-      return !query || a.k.indexOf(query) !== -1;
-    });
-
-    byId("archived-table").innerHTML =
-      "<tr><th>" + t("th.space") + '</th><th class="num">' + t("th.files") +
-      '</th><th class="num">' + t("th.size") + '</th><th class="num">' + t("th.downloads") + "</th></tr>" +
-      rows.slice(0, ROW_LIMIT).map(function (a) {
-        return "<tr><td>" + spaceLink(a.k) + "</td>" +
-          '<td class="num">' + num(a.f) + "</td>" +
-          '<td class="num">' + size(a.mb) + "</td>" +
-          '<td class="num">' + num(a.dl) + "</td></tr>";
-      }).join("");
-
-    byId("archived-status").textContent =
-      t("archived.hint", { shown: num(Math.min(ROW_LIMIT, rows.length)), n: num(rows.length) });
+    var typed = (byId("search-input").value || "").trim();
+    byId("search-status").textContent = typed.length < 2
+      ? (state.atMap ? t("search.ready", { n: num(state.atRows.length) })
+                     : t("search.loading", { n: num(state.summary ? state.summary.at.spaces : 0) }))
+      : t("search.hits", { n: num(records.length) });
   }
 
   /* ---------------- catalog ---------------- */
 
-  var CATALOG_PALETTE = ["#6cb6ff", "#7ed3a2", "#e5a54b", "#c792ea", "#ef6b6b", "#59c2d6"];
+  function loadCloud() {
+    if (state.cloud.length || state.cloudLoading) return;
+    state.cloudLoading = true;
+    fetchJson("data/cloud.json").then(function (payload) {
+      state.cloud = payload.terms;
+      state.cloudLoading = false;
+      renderCloud();
+    }).catch(function (err) {
+      state.cloudLoading = false;
+      byId("cloud-status").textContent = "cloud failed to load: " + err.message;
+    });
+  }
 
   function loadCatalog() {
     if (state.catalogLoaded || state.catalogLoading) return;
     state.catalogLoading = true;
     byId("catalog-status").textContent = t("catalog.loading", { n: "133,981" });
-    Promise.all([fetchJson("data/catalog.json"), fetchJson("data/cloud.json")])
-      .then(function (res) {
-        state.catalog = res[0].rows;
-        state.cloud = res[1].terms;
-        state.catalogLoaded = true;
-        state.catalogLoading = false;
-        populateSubdomains();
-        renderCloud();
-        renderCatalog();
-      })
-      .catch(function (err) {
-        state.catalogLoading = false;
-        byId("catalog-status").textContent = "catalog failed to load: " + err.message;
-      });
+    fetchJson("data/catalog.json").then(function (payload) {
+      state.catalog = payload.rows;
+      state.catalogLoaded = true;
+      state.catalogLoading = false;
+      populateSubdomains();
+      renderCatalog();
+    }).catch(function (err) {
+      state.catalogLoading = false;
+      byId("catalog-status").textContent = "catalog failed to load: " + err.message;
+    });
   }
 
   function populateSubdomains() {
     var select = byId("catalog-sub");
     if (select.options.length > 1) return;
-    var seen = {};
-    state.catalog.forEach(function (r) { seen[r[0].split("/")[0]] = (seen[r[0].split("/")[0]] || 0) + 1; });
-    Object.keys(seen).sort(function (a, b) { return seen[b] - seen[a]; }).forEach(function (sub) {
+    var counts = {};
+    state.catalog.forEach(function (r) {
+      var sub = r[0].split("/")[0];
+      counts[sub] = (counts[sub] || 0) + 1;
+    });
+    Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; }).forEach(function (sub) {
       var opt = document.createElement("option");
       opt.value = sub;
-      opt.textContent = sub + " (" + seen[sub].toLocaleString("en-US") + ")";
+      opt.textContent = sub + " (" + counts[sub].toLocaleString("en-US") + ")";
       select.appendChild(opt);
     });
   }
 
-  function catalogFiltered() {
+  function catalogRecords() {
     var query = (byId("catalog-query").value || "").trim().toLowerCase();
     var terms = query ? query.split(/\s+/) : [];
     var sub = byId("catalog-sub").value;
     var onlyArchived = byId("catalog-archived").checked;
     var onlyBig = byId("catalog-big").checked;
-    var sort = byId("catalog-sort").value;
 
-    var rows = state.catalog.filter(function (r) {
+    return state.catalog.filter(function (r) {
       if (sub && r[0].indexOf(sub + "/") !== 0) return false;
       if (onlyArchived && !state.archivedKeys.has(r[0])) return false;
       if (onlyBig && Number(r[3]) < 100) return false;
@@ -331,43 +412,40 @@
         for (var i = 0; i < terms.length; i++) if (haystack.indexOf(terms[i]) === -1) return false;
       }
       return true;
+    }).map(function (r) {
+      return { k: r[0], title: r[1], files: r[2], mb: r[3], dl: r[4] };
     });
-
-    rows.sort(function (a, b) {
-      if (sort === "name") return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0;
-      if (sort === "size") return Number(b[3]) - Number(a[3]);
-      if (sort === "downloads") return Number(b[4]) - Number(a[4]);
-      return Number(b[2]) - Number(a[2]);
-    });
-    return rows;
   }
 
   function renderCatalog() {
-    var rows = catalogFiltered();
-    var pages = Math.max(1, Math.ceil(rows.length / state.pageSize));
-    if (state.catalogPage >= pages) state.catalogPage = 0;
-    var start = state.catalogPage * state.pageSize;
-    var slice = rows.slice(start, start + state.pageSize);
-
-    byId("catalog-table").innerHTML =
-      "<tr><th>" + t("th.space") + "</th><th>" + t("th.title") + '</th><th class="num">' + t("th.files") +
-      '</th><th class="num">' + t("th.size") + '</th><th class="num">' + t("th.downloads") + "</th><th>" + t("th.arch") + "</th></tr>" +
-      slice.map(function (r) {
-        var archived = state.archivedKeys.has(r[0]);
-        return "<tr><td>" + spaceLink(r[0]) + "</td>" +
-          '<td class="title-cell">' + (r[1] ? escapeHtml(r[1]) : '<span class="pill pill--idle">—</span>') + "</td>" +
-          '<td class="num">' + num(r[2]) + "</td>" +
-          '<td class="num">' + size(r[3]) + "</td>" +
-          '<td class="num">' + num(r[4]) + "</td>" +
-          "<td>" + pill(archived ? t("yes") : t("no"), archived ? "ok" : "idle") + "</td></tr>";
-      }).join("");
-
-    byId("catalog-status").textContent = rows.length
-      ? t("catalog.hint", { n: num(rows.length), a: num(start + 1), b: num(Math.min(start + state.pageSize, rows.length)) })
+    if (!state.catalogLoaded) return;
+    var records = catalogRecords();
+    var columns = [
+      { key: "k", label: t("th.space"), cell: function (r) { return spaceLink(r.k); } },
+      {
+        key: "title", label: t("th.title"), cls: "title-cell", cell: function (r) {
+          return r.title ? escapeHtml(r.title) : '<span class="pill pill--idle">—</span>';
+        }
+      },
+      { key: "files", label: t("th.files"), num: true, cell: function (r) { return num(r.files); } },
+      { key: "mb", label: t("th.size"), num: true, cell: function (r) { return size(r.mb); } },
+      { key: "dl", label: t("th.downloads"), num: true, cell: function (r) { return num(r.dl); } },
+      {
+        key: "inIndex", label: t("th.inindex"), cell: function (r) {
+          if (!state.atMap) return pill("…", "idle");
+          return yesNo(state.atMap.has(r.k));
+        }
+      },
+      {
+        key: "archived", label: t("th.arch"), cell: function (r) {
+          return yesNo(state.archivedKeys.has(r.k));
+        }
+      }
+    ];
+    renderTable("catalog", records, columns, t("catalog.empty"));
+    byId("catalog-status").textContent = records.length
+      ? t("catalog.hint", { n: num(records.length) })
       : t("catalog.empty");
-    byId("catalog-page").textContent = t("catalog.page", { p: num(state.catalogPage + 1), n: num(pages) });
-    byId("catalog-prev").disabled = state.catalogPage === 0;
-    byId("catalog-next").disabled = state.catalogPage >= pages - 1;
   }
 
   function renderCloud() {
@@ -375,27 +453,65 @@
     byId("cloud-box").innerHTML = state.cloud.map(function (term, i) {
       var scale = Math.sqrt(term.n / max);
       var fontSize = (0.85 + scale * 1.75).toFixed(2);
-      var colour = CATALOG_PALETTE[i % CATALOG_PALETTE.length];
+      var colour = CLOUD_COLOURS[i % CLOUD_COLOURS.length];
       return '<a href="#catalog" class="cloud-term" data-term="' + escapeHtml(term.w) + '"' +
         ' style="font-size:' + fontSize + "em;color:" + colour + ';margin:0 10px 4px 0;display:inline-block"' +
         ' title="' + num(term.n) + '">' + escapeHtml(term.w) + "</a>";
     }).join("");
     byId("cloud-status").textContent = t("cloud.hint", { n: num(state.cloud.length) });
+
     Array.prototype.forEach.call(document.querySelectorAll(".cloud-term"), function (el) {
       el.addEventListener("click", function (ev) {
         ev.preventDefault();
         byId("catalog-query").value = el.dataset.term;
-        state.catalogPage = 0;
-        renderCatalog();
-        document.getElementById("catalog").scrollIntoView({ behavior: "smooth", block: "start" });
+        tableState("catalog").page = 0;
+        if (state.catalogLoaded) renderCatalog(); else loadCatalog();
+        byId("catalog").scrollIntoView({ behavior: "smooth", block: "start" });
       });
     });
   }
 
-  function escapeHtml(value) {
-    return String(value).replace(/[&<>"']/g, function (c) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+  /* ---------------- delta & archived ---------------- */
+
+  function renderDelta() {
+    var query = (byId("delta-filter").value || "").toLowerCase();
+    var mode = byId("delta-mode").value;
+    var records = state.delta.filter(function (d) {
+      if (query && d.k.indexOf(query) === -1) return false;
+      if (mode === "arch") return d.ar;
+      if (mode === "noarch") return !d.ar;
+      return true;
+    }).map(function (d) {
+      return { k: d.k, files: d.f, mb: d.mb, status: d.st || "", archived: d.ar };
     });
+
+    var columns = [
+      { key: "k", label: t("th.space"), cell: function (r) { return spaceLink(r.k); } },
+      { key: "files", label: t("th.files"), num: true, cell: function (r) { return num(r.files); } },
+      { key: "mb", label: t("th.size"), num: true, cell: function (r) { return r.mb === null ? "—" : size(r.mb); } },
+      { key: "status", label: t("th.status"), cell: function (r) { return pill(r.status || "—"); } },
+      { key: "archived", label: t("th.arch"), cell: function (r) { return yesNo(r.archived); } }
+    ];
+    renderTable("delta", records, columns, t("catalog.empty"));
+    byId("delta-status").textContent = t("delta.hint", { n: num(records.length) });
+  }
+
+  function renderArchived() {
+    var query = (byId("archived-filter").value || "").toLowerCase();
+    var records = state.archived.filter(function (a) {
+      return !query || a.k.indexOf(query) !== -1;
+    }).map(function (a) {
+      return { k: a.k, files: a.f, mb: a.mb, dl: a.dl };
+    });
+
+    var columns = [
+      { key: "k", label: t("th.space"), cell: function (r) { return spaceLink(r.k); } },
+      { key: "files", label: t("th.files"), num: true, cell: function (r) { return num(r.files); } },
+      { key: "mb", label: t("th.size"), num: true, cell: function (r) { return size(r.mb); } },
+      { key: "dl", label: t("th.downloads"), num: true, cell: function (r) { return num(r.dl); } }
+    ];
+    renderTable("archived", records, columns, t("catalog.empty"));
+    byId("archived-status").textContent = t("archived.hint", { n: num(records.length) });
   }
 
   /* ---------------- boot ---------------- */
@@ -408,44 +524,72 @@
   }
 
   function init() {
-    var fromUrl = new URLSearchParams(location.search).get("lang");
+    var params = new URLSearchParams(location.search);
     var stored = null;
     try { stored = localStorage.getItem("archive-index-lang"); } catch (e) { /* ignore */ }
-    var presetQuery = new URLSearchParams(location.search).get("q") || "";
     var guess = (navigator.language || "en").slice(0, 2);
-    state.lang = window.I18N[fromUrl] ? fromUrl
+    state.lang = window.I18N[params.get("lang")] ? params.get("lang")
       : window.I18N[stored] ? stored
       : window.I18N[guess] ? guess : "en";
 
     document.querySelectorAll(".lang-switch button").forEach(function (btn) {
       btn.addEventListener("click", function () { setLang(btn.dataset.lang); });
     });
-    byId("search-input").addEventListener("input", function (e) { renderSearch(e.target.value); });
+    bindTableControls();
+
+    byId("search-input").value = params.get("q") || "";
+    byId("search-input").addEventListener("input", function () {
+      tableState("search").page = 0;
+      renderSearch();
+    });
     byId("search-clear").addEventListener("click", function () {
       byId("search-input").value = "";
-      renderSearch("");
+      tableState("search").page = 0;
+      renderSearch();
       byId("search-input").focus();
     });
-    // catalog controls (data loads on first interaction)
-    byId("catalog-query").addEventListener("focus", loadCatalog);
-    byId("catalog-query").addEventListener("input", function () { loadCatalog(); state.catalogPage = 0; renderCatalog(); });
-    byId("catalog-sort").addEventListener("change", function () { state.catalogPage = 0; renderCatalog(); });
-    byId("catalog-sub").addEventListener("change", function () { state.catalogPage = 0; renderCatalog(); });
-    byId("catalog-archived").addEventListener("change", function () { state.catalogPage = 0; renderCatalog(); });
-    byId("catalog-big").addEventListener("change", function () { state.catalogPage = 0; renderCatalog(); });
-    byId("catalog-prev").addEventListener("click", function () { if (state.catalogPage > 0) { state.catalogPage--; renderCatalog(); } });
-    byId("catalog-next").addEventListener("click", function () { state.catalogPage++; renderCatalog(); });
-    byId("delta-filter").addEventListener("input", renderDelta);
-    byId("delta-mode").addEventListener("change", renderDelta);
-    byId("archived-filter").addEventListener("input", renderArchived);
 
-    if (presetQuery) byId("search-input").value = presetQuery;
-    var presetCatalog = new URLSearchParams(location.search).get("cat") || "";
-    if (location.hash === "#catalog" || location.hash === "#cloud" || presetCatalog) {
-      loadCatalog();
-      if (presetCatalog) byId("catalog-query").value = presetCatalog;
+    byId("delta-filter").addEventListener("input", function () { tableState("delta").page = 0; renderDelta(); });
+    byId("delta-mode").addEventListener("change", function () { tableState("delta").page = 0; renderDelta(); });
+    byId("archived-filter").addEventListener("input", function () { tableState("archived").page = 0; renderArchived(); });
+
+    // cloud.json is 4 KB → load immediately; catalog.json is 7 MB → only when needed
+    loadCloud();
+    byId("catalog-query").value = params.get("cat") || "";
+    byId("catalog-query").addEventListener("focus", loadCatalog);
+    byId("catalog-query").addEventListener("input", function () {
+      tableState("catalog").page = 0;
+      if (state.catalogLoaded) renderCatalog();
+    });
+    byId("catalog-sub").addEventListener("change", function () { tableState("catalog").page = 0; renderCatalog(); });
+    byId("catalog-archived").addEventListener("change", function () { tableState("catalog").page = 0; renderCatalog(); });
+    byId("catalog-big").addEventListener("change", function () { tableState("catalog").page = 0; renderCatalog(); });
+
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          if (entry.target.id === "cloud") loadCloud();
+          if (entry.target.id === "catalog") loadCatalog();
+        });
+      }, { rootMargin: "250px" });
+      ["catalog", "cloud"].forEach(function (id) {
+        var el = byId(id);
+        if (el) io.observe(el);
+      });
     }
+    window.addEventListener("hashchange", function () {
+      if (location.hash === "#cloud") loadCloud();
+      if (location.hash === "#catalog") loadCatalog();
+    });
+    document.querySelectorAll('a[href="#cloud"], a[href="#catalog"]').forEach(function (a) {
+      a.addEventListener("click", function () {
+        if (a.getAttribute("href") === "#cloud") loadCloud(); else loadCatalog();
+      });
+    });
+
     applyI18n();
+    if (params.get("cat") || location.hash === "#catalog" || location.hash === "#cloud") loadCatalog();
 
     Promise.all([
       fetchJson("data/summary.json"),
@@ -459,11 +603,11 @@
       state.archived.forEach(function (a) { state.archivedKeys.add(a.k); });
       applyI18n();
 
-      // the community index is ~7 MB → load it in the background
       fetchJson("data/at.json").then(function (payload) {
         state.atRows = payload.rows;
         state.atMap = new Map(payload.rows.map(function (r) { return [r[0], r]; }));
-        renderSearch(byId("search-input").value);
+        renderSearch();
+        if (state.catalogLoaded) renderCatalog();   // fill the "in community index" column
       }).catch(function (err) {
         byId("search-status").textContent = "index failed to load: " + err.message;
       });

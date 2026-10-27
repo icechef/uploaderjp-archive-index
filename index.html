@@ -58,21 +58,15 @@
       <div class="scroll">
         <table id="search-table"></table>
       </div>
+      <div class="pager" id="search-pager"></div>
     </section>
 
     <section id="catalog" aria-labelledby="catalog-title">
-      <h2 id="catalog-title"><span data-i18n="catalog.title">Catalog of non-empty spaces</span><span class="tag" data-i18n="catalog.tag">133,981 spaces with files</span></h2>
+      <h2 id="catalog-title"><span data-i18n="catalog.title">Catalog of non-empty spaces</span><span class="tag" id="catalog-tag"></span></h2>
       <p class="lead" data-i18n="catalog.lead">Every space that actually holds files, with its title as the owner wrote it. Search matches both the space name and the title; sorted by file count by default.</p>
       <div class="toolbar">
         <label class="visually-hidden" for="catalog-query">Catalog search</label>
         <input type="search" id="catalog-query" data-i18n-ph="catalog.ph" autocomplete="off">
-        <label class="visually-hidden" for="catalog-sort">Sort</label>
-        <select id="catalog-sort">
-          <option value="files" data-i18n="catalog.sort.files">By file count</option>
-          <option value="size" data-i18n="catalog.sort.size">By size</option>
-          <option value="downloads" data-i18n="catalog.sort.downloads">By downloads</option>
-          <option value="name" data-i18n="catalog.sort.name">By name</option>
-        </select>
         <label class="visually-hidden" for="catalog-sub">Subdomain</label>
         <select id="catalog-sub"><option value="" data-i18n="catalog.allsub">All subdomains</option></select>
         <label class="pill" style="cursor:pointer"><input type="checkbox" id="catalog-archived" style="vertical-align:-2px"> <span data-i18n="catalog.onlyarch">archived only</span></label>
@@ -80,11 +74,7 @@
       </div>
       <p class="status" id="catalog-status" aria-live="polite"></p>
       <div class="scroll" style="max-height:680px"><table id="catalog-table"></table></div>
-      <div class="toolbar" style="justify-content:center">
-        <button type="button" class="btn" id="catalog-prev" data-i18n="catalog.prev">Prev</button>
-        <span class="status" id="catalog-page"></span>
-        <button type="button" class="btn" id="catalog-next" data-i18n="catalog.next">Next</button>
-      </div>
+      <div class="pager" id="catalog-pager"></div>
     </section>
 
     <section id="cloud" aria-labelledby="cloud-title">
@@ -112,6 +102,7 @@
       <div class="scroll">
         <table id="delta-table"></table>
       </div>
+      <div class="pager" id="delta-pager"></div>
     </section>
 
     <section id="archived" aria-labelledby="archived-title">
@@ -126,6 +117,7 @@
       <div class="scroll">
         <table id="archived-table"></table>
       </div>
+      <div class="pager" id="archived-pager"></div>
     </section>
 
     <section id="sample" aria-labelledby="sample-title">
@@ -165,6 +157,23 @@ grep "download/1234" cdx_offsets.jsonl   # → offset/length, then seek</pre>
       <div class="note" id="credits"></div>
     </section>
   </main>
+
+  <section id="sources" aria-labelledby="sources-title">
+    <h2 id="sources-title" data-i18n="sources.title">Data sources</h2>
+    <ul class="clean">
+      <li><span data-i18n="sources.original">Original service</span> —
+        <a href="https://uploader.jp/" target="_blank" rel="noopener noreferrer">uploader.jp</a> ·
+        <a href="https://getuploader.com/" target="_blank" rel="noopener noreferrer">getuploader.com</a> ·
+        <a href="https://u1.getuploader.com/sample/" target="_blank" rel="noopener noreferrer">u1.getuploader.com/sample/</a></li>
+      <li><span data-i18n="sources.community">Community index</span> —
+        <a href="https://uploaderjp-archive.surge.sh/" target="_blank" rel="noopener noreferrer">uploaderjp-archive.surge.sh</a>
+        (<a href="https://uploaderjp-archive.surge.sh/meta.json" target="_blank" rel="noopener noreferrer">meta.json</a>)</li>
+      <li><span data-i18n="sources.items">Internet Archive copies</span> —
+        <a href="https://archive.org/details/u1-getuploader-sample-archive" target="_blank" rel="noopener noreferrer">files + index</a> ·
+        <a href="https://archive.org/details/u1-getuploader-sample-warc-20261026" target="_blank" rel="noopener noreferrer">page WARC</a></li>
+    </ul>
+    <p class="status" data-i18n="sources.note"></p>
+  </section>
 
   <footer class="site-footer">
     <div class="wrap">

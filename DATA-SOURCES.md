@@ -14,9 +14,10 @@ This repository mixes data from several origins. **Nothing here is relicensed** 
 | Credit | The crawl is published by the `uploaderjp-archive` project (ArchiveTeam-adjacent community effort). All rights remain with its authors. |
 | Caveat | The original project publishes no explicit licence. It is re-hosted here in reduced form for indexing/interoperability, with attribution and a link back. If the authors object, this file will be removed on request — open an issue. |
 
-`data/catalog.json` combines both origins: the row set (space key, file count, size, download count,
-latest date) comes from the same community crawl, filtered to spaces with `files > 0`; the `title`
-column is field 2 of that crawl's `meta.json`, reproduced verbatim. `data/cloud.json` is computed by
+`data/catalog.json` combines both origins: most rows (space key, file count, size, download count)
+come from the same community crawl filtered to `files > 0`; 1,564 further rows are spaces that crawl
+misses but this project's own scan found to be non-empty (their `title` is unknown, shown as `—`). The
+`title` column is field 2 of the crawl's `meta.json`, reproduced verbatim. `data/cloud.json` is computed by
 this project from those titles (curated vocabulary + katakana/kanji runs, stop-words removed).
 
 `data/at-supplement-delta.csv`, `data/at-supplement-archived.csv`, `data/delta.json`,
