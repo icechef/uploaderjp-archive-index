@@ -8,7 +8,7 @@
   <meta property="og:title" content="uploader.jp / getuploader.com archive index">
   <meta property="og:description" content="Community index of uploader.jp spaces, plus 1,630 spaces it missed and what has been archived before the 2026-11-25 shutdown.">
   <meta property="og:type" content="website">
-  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/style.css?v=20261027c">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -37,14 +37,22 @@
   <header class="site-header">
     <div class="wrap">
       <div class="brand">uploader.jp archive index<small data-i18n="hd.sub">community index + supplement</small></div>
-      <nav class="site-nav" aria-label="Sections">
+      <div class="nav-row">
+        <button type="button" class="nav-arrow" data-nav="-1" aria-label="Scroll navigation left">‹</button>
+        <nav class="site-nav" aria-label="Sections">
         <a href="#search" data-i18n="nav.search">Search</a>
         <a href="#catalog" data-i18n="nav.catalog">Catalog</a>
         <a href="#cloud" data-i18n="nav.cloud">Word cloud</a>
         <a href="#delta" data-i18n="nav.delta">Missed spaces</a>
         <a href="#archived" data-i18n="nav.archived">Archived</a>
         <a href="#method" data-i18n="nav.method">Method</a>
-      </nav>
+        </nav>
+        <button type="button" class="nav-arrow" data-nav="1" aria-label="Scroll navigation right">›</button>
+        <div class="view-switch" role="group" aria-label="Layout">
+        <button type="button" data-view="cards" data-i18n="view.cards">Cards</button>
+          <button type="button" data-view="table" data-i18n="view.table">Table</button>
+        </div>
+      </div>
       <div class="lang-switch" role="group" aria-label="Language">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="zh" aria-pressed="false">中文</button>
@@ -227,7 +235,7 @@
     </div>
   </footer>
 
-  <script src="assets/i18n.js"></script>
-  <script src="assets/app.js"></script>
+  <script src="assets/i18n.js?v=20261027c"></script>
+  <script src="assets/app.js?v=20261027c"></script>
 </body>
 </html>

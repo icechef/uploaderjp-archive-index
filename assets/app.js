@@ -44,11 +44,38 @@
 
   function isNarrow() { return window.innerWidth <= 700; }
 
+  var VIEW_KEY = "archive-index-view";
+
+  function currentView() {
+    try { return localStorage.getItem(VIEW_KEY) === "table" ? "table" : "cards"; }
+    catch (e) { return "cards"; }
+  }
+
+  function applyView(view) {
+    document.body.classList.toggle("table-mode", view === "table");
+    document.querySelectorAll(".view-switch button").forEach(function (btn) {
+      btn.setAttribute("aria-pressed", String(btn.dataset.view === view));
+    });
+    // 卡片模式下手机每页 25 条（卡片很高），表格模式恢复 100 条
+    state.tables = {};
+    if (state.summary) { renderSearch(); renderDelta(); renderArchived(); if (state.catalogLoaded) renderCatalog(); }
+  }
+
+  function syncNavArrows() {
+    var nav = document.querySelector(".site-nav");
+    if (!nav) return;
+    var overflow = nav.scrollWidth > nav.clientWidth + 2;
+    document.querySelectorAll(".nav-arrow").forEach(function (a) {
+      a.style.display = overflow ? "inline-flex" : "none";
+    });
+  }
+
   function tableState(name) {
     if (!state.tables[name]) {
       var d = TABLE_DEFAULTS[name];
       // 手机端每页少一些：卡片比表格行高很多，100 条会滚到两万多像素
-      state.tables[name] = { page: d.page, size: isNarrow() ? 25 : d.size, sort: d.sort, dir: d.dir };
+      var narrow = isNarrow() && !document.body.classList.contains("table-mode");
+      state.tables[name] = { page: d.page, size: narrow ? 25 : d.size, sort: d.sort, dir: d.dir };
     }
     return state.tables[name];
   }
@@ -88,6 +115,9 @@
     document.querySelectorAll(".lang-switch button").forEach(function (btn) {
       btn.setAttribute("aria-pressed", String(btn.dataset.lang === state.lang));
     });
+    document.querySelectorAll(".view-switch button").forEach(function (btn) {
+      btn.setAttribute("aria-pressed", String(btn.dataset.view === currentView()));
+    });
 
     if (state.summary) {
       renderLead();
@@ -101,6 +131,8 @@
       if (state.cloud.length) renderCloud();
       if (state.catalogLoaded) renderCatalog();
     }
+    // 语言切换会改变导航文字长度，箭头显隐要重新判定
+    syncNavArrows();
   }
 
   function setLang(lang) {
@@ -650,6 +682,27 @@
       btn.addEventListener("click", function () { setLang(btn.dataset.lang); });
     });
     bindTableControls();
+
+    // 卡片 / 表格 视图切换（仅手机端显示按钮）
+    applyView(currentView());
+    document.querySelectorAll(".view-switch button").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var view = btn.dataset.view;
+        try { localStorage.setItem(VIEW_KEY, view); } catch (e) { /* ignore */ }
+        applyView(view);
+      });
+    });
+
+    // 导航左右滑动（只有真的溢出时才显示箭头）
+    syncNavArrows();
+    window.addEventListener("resize", syncNavArrows);
+    document.querySelectorAll(".nav-arrow").forEach(function (arrow) {
+      arrow.addEventListener("click", function () {
+        var nav = document.querySelector(".site-nav");
+        var dir = Number(arrow.dataset.nav) || 1;
+        nav.scrollBy({ left: dir * Math.max(140, nav.clientWidth * 0.7), behavior: "smooth" });
+      });
+    });
 
     byId("search-input").value = params.get("q") || "";
     byId("search-input").addEventListener("focus", ensureIndex);
