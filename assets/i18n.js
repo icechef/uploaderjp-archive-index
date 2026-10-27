@@ -6,7 +6,8 @@
  */
 window.I18N = {
   en: {
-    "card.catalog": "non-empty spaces you can browse",
+    "archived.tag": "506 spaces",
+    "card.catalog": "browsable non-empty spaces",
 
     "nav.catalog": "Catalog",
     "nav.cloud": "Word cloud",
@@ -43,18 +44,18 @@ window.I18N = {
     "nav.method": "Method",
 
     "h1": "The uploader.jp / getuploader.com archive index",
-    "lead": "The community index covers {at} spaces. We found {delta} more it missed, scanned {mine} of them, and archived {arch} spaces ({archfiles} files / {archmb}) before the service shuts down on {date}.",
+    "lead": "The community index covers {at} spaces. This page adds {delta} spaces that index does not contain, with the file counts and sizes of {mine} scanned spaces, and notes which spaces already have archived copies ({arch} spaces, {archfiles} files, {archmb}). The service shuts down on {date}.",
 
     "card.at": "spaces in the community index",
     "card.atmb": "its reported size",
     "card.delta": "spaces the index missed",
     "card.deltamb": "known size of those",
-    "card.arch": "spaces we archived",
-    "card.mine": "files in spaces we scanned",
+    "card.arch": "spaces with archived copies",
+    "card.mine": "files in scanned spaces",
 
     "search.title": "Look up a space",
-    "search.tag": "community index + ours",
-    "search.lead": "Type a space name, a subdomain (uu, ux, u1…) or a full URL. Results show the file count and size from the community index, whether the index missed that space, and whether we archived it.",
+    "search.tag": "community index + catalog",
+    "search.lead": "Type a space name, a subdomain (uu, ux, u1…) or a full URL. Results show the file count and size from the community index, whether the index missed that space, and whether an archived copy exists.",
     "search.ph": "e.g. mugenShigaraki, ux/genryu_sai, https://uu.getuploader.com/lras/",
     "search.clear": "Clear",
     "search.loading": "loading the community index ({n} spaces)…",
@@ -67,7 +68,7 @@ window.I18N = {
     "th.files": "files",
     "th.size": "size",
     "th.inat": "in community index",
-    "th.arch": "archived by us",
+    "th.arch": "archived copy",
     "th.downloads": "downloads",
 
     "yes": "yes",
@@ -77,13 +78,13 @@ window.I18N = {
     "delta.note": "Found through search engines, wiki link-lists and shared attachments. A 30-space sample was verified by hand: 25 alive, 3 → 404, 2 anomalies — about 83% genuinely alive, so this gap is real. Sorted by size where known.",
     "delta.ph": "filter by space name or subdomain…",
     "delta.f.all": "All",
-    "delta.f.arch": "Archived by us",
-    "delta.f.noarch": "Not archived yet",
+    "delta.f.arch": "Has archived copy",
+    "delta.f.noarch": "No archived copy",
     "delta.csv": "Download CSV",
     "delta.hint": "showing {shown} of {n} — the full list is in the CSV",
 
-    "archived.title": "What we archived",
-    "archived.lead": "File bytes for {n} spaces are stored on the Internet Archive ({files} files, {mb}), together with a page-level WARC archive of the sample space ({warc} URLs).",
+    "archived.title": "Spaces with archived copies",
+    "archived.lead": "File copies for {n} spaces are held by the Internet Archive ({files} files, {mb}); the sample space also has a page-level WARC archive ({warc} URLs).",
     "archived.ph": "filter by space name or subdomain…",
     "archived.csv": "Download CSV",
     "archived.hint": "showing {shown} of {n}",
@@ -103,7 +104,7 @@ window.I18N = {
     "sample.zero": "zero-byte files",
 
     "method.title": "Method, gaps and caveats",
-    "method.how": "How this was built",
+    "method.how": "How the index was built",
     "method.how.list": [
       "The base list is the community index (uploaderjp-archive.surge.sh); spaces are also enumerated from search engines, wiki link-lists and shared attachments.",
       "Each space's file count and disk usage are read from the 統計 block at the bottom of the space's own page — the only place the totals exist.",
@@ -113,13 +114,13 @@ window.I18N = {
     ],
     "method.gaps": "Known gaps",
     "method.gaps.list": [
-      "We archived 506 of the 2,526 spaces we scanned; the rest is metadata only.",
+      "506 of the 2,526 scanned spaces have file copies on the Internet Archive; the rest is metadata only.",
       "Inside the sample space: 2,770 of 8,394 files are password-locked (no download possible); 3 .php files return 404 at the source; 84 files are 0 bytes by design.",
-      "Wayback had snapshots for only ~11% of the per-file detail pages before we started (sample of 36 CDX lookups).",
+      "Wayback had snapshots for only ~11% of the per-file detail pages when this index was compiled (sample of 36 CDX lookups, 2026-10-27).",
       "A single snapshot in October 2026 — uploads made between then and the shutdown are not covered.",
       "The content is Japanese and mostly game mods / assets / audio; this is a file host, not a text archive."
     ],
-    "method.credits": "Data credit: the base index is the community crawl published at uploaderjp-archive.surge.sh ({at} spaces); this page re-hosts a derived subset and adds what that index missed, plus our own archiving results. The service shuts down on {date}.",
+    "method.credits": "Data credit: the base index is the community crawl published at uploaderjp-archive.surge.sh ({at} spaces); this page re-hosts a derived subset, adds the spaces that index does not contain, and notes where archived copies exist. The service shuts down on {date}.",
     "source.note": "Sources and licences",
 
     "foot.built": "Static page — no tracking, no build step. Generated {gen}.",
@@ -127,6 +128,7 @@ window.I18N = {
   },
 
   zh: {
+    "archived.tag": "506 个空间",
     "card.catalog": "可浏览的非空空间",
 
     "nav.catalog": "目录",
@@ -164,18 +166,18 @@ window.I18N = {
     "nav.method": "方法",
 
     "h1": "uploader.jp / getuploader.com 存档索引",
-    "lead": "社群索引收录了 {at} 个空间。我们另外找到它漏掉的 {delta} 个，扫描了其中 {mine} 个，并在服务关闭（{date}）前把 {arch} 个空间（{archfiles} 个文件 / {archmb}）真正存了下来。",
+    "lead": "社群索引收录了 {at} 个空间。本页补充该索引没有的 {delta} 个空间，附已扫描 {mine} 个空间的文件数与容量，并标注哪些空间已有存档副本（{arch} 个空间 / {archfiles} 个文件 / {archmb}）。服务将于 {date} 关闭。",
 
     "card.at": "社群索引收录的空间",
     "card.atmb": "索引自报的容量",
     "card.delta": "索引漏掉的空间",
     "card.deltamb": "这些空间的已知容量",
-    "card.arch": "我们已存档的空间",
+    "card.arch": "有存档副本的空间",
     "card.mine": "已扫描空间的文件数",
 
     "search.title": "查询某个空间",
-    "search.tag": "社群索引 + 我方数据",
-    "search.lead": "输入空间名、子域（uu / ux / u1…）或完整网址。结果会列出社群索引里的文件数与容量、该空间是否为索引漏掉，以及我们是否已存档。",
+    "search.tag": "社群索引 + 目录",
+    "search.lead": "输入空间名、子域（uu / ux / u1…）或完整网址。结果会列出社群索引里的文件数与容量、该空间是否为索引漏掉，以及是否已有存档副本。",
     "search.ph": "例如 mugenShigaraki、ux/genryu_sai、https://uu.getuploader.com/lras/",
     "search.clear": "清空",
     "search.loading": "正在载入社群索引（{n} 个空间）…",
@@ -188,7 +190,7 @@ window.I18N = {
     "th.files": "文件数",
     "th.size": "容量",
     "th.inat": "社群索引",
-    "th.arch": "我方存档",
+    "th.arch": "存档副本",
     "th.downloads": "下载数",
 
     "yes": "是",
@@ -198,13 +200,13 @@ window.I18N = {
     "delta.note": "通过搜索引擎、wiki 链接页、分享附件发现。抽 30 个手工验证：25 个存活 / 3 个 404 / 2 个异常 —— 约 83% 真实存活，说明遗漏是真实存在的。已知容量的按容量排序。",
     "delta.ph": "按空间名或子域筛选…",
     "delta.f.all": "全部",
-    "delta.f.arch": "我方已存档",
-    "delta.f.noarch": "尚未存档",
+    "delta.f.arch": "已有存档副本",
+    "delta.f.noarch": "暂无存档副本",
     "delta.csv": "下载 CSV",
     "delta.hint": "显示 {shown} / {n} 条 —— 完整清单见 CSV",
 
-    "archived.title": "我们已存档的空间",
-    "archived.lead": "{n} 个空间的文件本体已存到 Internet Archive（{files} 个文件 / {mb}），另外对 sample 空间做了整站页面级 WARC 存档（{warc} 个 URL）。",
+    "archived.title": "已有存档副本的空间",
+    "archived.lead": "{n} 个空间的文件副本存放在 Internet Archive（{files} 个文件 / {mb}）；sample 空间另有整站页面级 WARC 存档（{warc} 个 URL）。",
     "archived.ph": "按空间名或子域筛选…",
     "archived.csv": "下载 CSV",
     "archived.hint": "显示 {shown} / {n} 条",
@@ -224,7 +226,7 @@ window.I18N = {
     "sample.zero": "0 字节文件",
 
     "method.title": "方法、缺口与限制",
-    "method.how": "怎么做的",
+    "method.how": "索引是怎么做的",
     "method.how.list": [
       "基础清单来自社群索引（uploaderjp-archive.surge.sh）；另外用搜索引擎、wiki 链接页、分享附件枚举。",
       "每个空间的文件数与容量取自该空间首页底部的「統計」区块 —— 那是唯一有汇总数字的地方。",
@@ -234,13 +236,13 @@ window.I18N = {
     ],
     "method.gaps": "已知缺口",
     "method.gaps.list": [
-      "扫描了 2,526 个空间，实际只下载了 506 个，其余只有元数据。",
+      "2,526 个已扫描空间中，506 个有文件副本存放在 Internet Archive，其余仅有元数据。",
       "sample 空间内：8,394 个文件里 2,770 个需要密码（无法下载）；3 个 .php 源站 404；84 个是源站本来就 0 字节。",
-      "开工前 Wayback 对详情页的历史快照覆盖只有约 11%（抽样 36 次 CDX 查询）。",
+      "整理本索引时，Wayback 对详情页的历史快照覆盖只有约 11%（抽样 36 次 CDX 查询，2026-10-27）。",
       "2026 年 10 月的单次快照 —— 之后到关站前新增的上传不在其中。",
       "内容是日文，以游戏 MOD / 素材 / 音源为主；这是文件托管站，不是文字存档。"
     ],
-    "method.credits": "数据来源说明：基础索引是 uploaderjp-archive.surge.sh 公布的社群抓取结果（{at} 个空间），本页重新托管其派生子集，并补充该索引漏掉的部分与我方存档成果。服务将于 {date} 关闭。",
+    "method.credits": "数据来源说明：基础索引是 uploaderjp-archive.surge.sh 公布的社群抓取结果（{at} 个空间），本页重新托管其派生子集，补充该索引未收录的空间，并标注已有的存档副本。服务将于 {date} 关闭。",
     "source.note": "数据来源与许可",
 
     "foot.built": "纯静态页面，无追踪、无构建步骤。生成于 {gen}。",
@@ -248,6 +250,7 @@ window.I18N = {
   },
 
   ja: {
+    "archived.tag": "506 スペース",
     "card.catalog": "閲覧できる空でないスペース",
 
     "nav.catalog": "カタログ",
@@ -285,18 +288,18 @@ window.I18N = {
     "nav.method": "方法",
 
     "h1": "uploader.jp / getuploader.com アーカイブ索引",
-    "lead": "コミュニティ索引は {at} スペースを収録しています。索引に無い {delta} スペースを追加で発見し、うち {mine} を走査、サービス終了（{date}）までに {arch} スペース（{archfiles} ファイル / {archmb}）を実際に保存しました。",
+    "lead": "コミュニティ索引は {at} スペースを収録しています。本ページは索引に無い {delta} スペースを掲載し、走査済み {mine} スペースのファイル数・容量、および保存副本がある {arch} スペース（{archfiles} ファイル / {archmb}）を示します。サービスは {date} に終了します。",
 
     "card.at": "コミュニティ索引の収録数",
     "card.atmb": "索引の自己申告容量",
     "card.delta": "索引に無いスペース",
     "card.deltamb": "その既知容量",
-    "card.arch": "保存したスペース",
+    "card.arch": "保存副本があるスペース",
     "card.mine": "走査したスペースのファイル数",
 
     "search.title": "スペースを検索",
-    "search.tag": "コミュニティ索引 + 独自データ",
-    "search.lead": "スペース名・サブドメイン（uu / ux / u1…）・URL を入力してください。索引のファイル数と容量、索引に無いスペースかどうか、保存済みかどうかを表示します。",
+    "search.tag": "コミュニティ索引 + カタログ",
+    "search.lead": "スペース名・サブドメイン（uu / ux / u1…）・URL を入力してください。索引のファイル数と容量、索引に無いスペースかどうか、保存副本の有無を表示します。",
     "search.ph": "例: mugenShigaraki、ux/genryu_sai、https://uu.getuploader.com/lras/",
     "search.clear": "クリア",
     "search.loading": "コミュニティ索引を読み込み中（{n} スペース）…",
@@ -309,7 +312,7 @@ window.I18N = {
     "th.files": "ファイル数",
     "th.size": "容量",
     "th.inat": "コミュニティ索引",
-    "th.arch": "保存済み",
+    "th.arch": "保存副本",
     "th.downloads": "ダウンロード数",
 
     "yes": "はい",
@@ -319,13 +322,13 @@ window.I18N = {
     "delta.note": "検索エンジン・wiki のリンク集・共有添付から発見。30 件を手作業で検証（25 生存 / 3 が 404 / 2 異常）＝約 83% が実在。欠落は実在します。容量が判明しているものは容量順。",
     "delta.ph": "スペース名・サブドメインで絞り込み…",
     "delta.f.all": "すべて",
-    "delta.f.arch": "保存済み",
-    "delta.f.noarch": "未保存",
+    "delta.f.arch": "保存副本あり",
+    "delta.f.noarch": "保存副本なし",
     "delta.csv": "CSV をダウンロード",
     "delta.hint": "{shown} / {n} 件を表示 — 全件は CSV にあります",
 
-    "archived.title": "保存したスペース",
-    "archived.lead": "{n} スペースのファイル本体を Internet Archive に保存しました（{files} ファイル / {mb}）。さらに sample スペースはページ単位の WARC として完全保存（{warc} URL）。",
+    "archived.title": "保存副本があるスペース",
+    "archived.lead": "{n} スペースのファイル副本が Internet Archive に保存されています（{files} ファイル / {mb}）。sample スペースはページ単位の WARC としても保存（{warc} URL）。",
     "archived.ph": "スペース名・サブドメインで絞り込み…",
     "archived.csv": "CSV をダウンロード",
     "archived.hint": "{shown} / {n} 件を表示",
@@ -345,7 +348,7 @@ window.I18N = {
     "sample.zero": "0 バイトのファイル",
 
     "method.title": "方法・欠落・注意点",
-    "method.how": "作製方法",
+    "method.how": "索引の作り方",
     "method.how.list": [
       "基礎リストはコミュニティ索引（uploaderjp-archive.surge.sh）。加えて検索エンジン・wiki のリンク集・共有添付から列挙。",
       "各スペースのファイル数と容量は、スペース自身のページ下部にある「統計」ブロックから取得（合計が載る唯一の場所）。",
@@ -355,13 +358,13 @@ window.I18N = {
     ],
     "method.gaps": "既知の欠落",
     "method.gaps.list": [
-      "走査した 2,526 スペースのうち実際に保存できたのは 506。残りはメタデータのみ。",
+      "走査した 2,526 スペースのうち、ファイル副本が Internet Archive にあるのは 506。残りはメタデータのみ。",
       "sample スペース内: 8,394 ファイル中 2,770 はパスワード付き（ダウンロード不可）、3 つの .php はソース側 404、84 は元から 0 バイト。",
-      "着手前、Wayback の詳細ページのスナップショットは約 11% のみ（CDX 36 件の標本）。",
+      "本索引の作成時点で、Wayback の詳細ページのスナップショットは約 11% のみ（CDX 36 件の標本、2026-10-27）。",
       "2026 年 10 月の単一スナップショット。以降、終了までの新規アップロードは含まれません。",
       "内容は日本語のゲーム MOD・素材・音源が中心。ファイルホストでありテキストアーカイブではありません。"
     ],
-    "method.credits": "データ出典: 基礎索引は uploaderjp-archive.surge.sh が公開しているコミュニティのクロール結果（{at} スペース）。本ページはその派生子集合を再ホストし、欠落分と当方の保存結果を追加したものです。サービスは {date} に終了します。",
+    "method.credits": "データ出典: 基礎索引は uploaderjp-archive.surge.sh が公開しているコミュニティのクロール結果（{at} スペース）。本ページはその派生子集合を再ホストし、索引に無いスペースを追加、保存副本の有無を示します。サービスは {date} に終了します。",
     "source.note": "出典とライセンス",
 
     "foot.built": "静的ページ。トラッキング・ビルド工程なし。生成 {gen}。",

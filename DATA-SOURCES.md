@@ -45,7 +45,7 @@ should keep that attribution too.
 
 ## 4. Known gaps in the numbers on the site
 
-* We archived **506 of the 2,526** spaces we scanned; the rest is metadata only.
+* **506 of the 2,526** scanned spaces have file copies on the Internet Archive; the rest is metadata only.
 * Inside the `sample` space: 2,770 of 8,394 files are password-locked and could not be downloaded;
   3 `.php` files return 404 at the source; 84 files are 0 bytes by design.
 * Default browser sorting of Wayback coverage: only ~11% of per-file detail pages had any snapshot

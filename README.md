@@ -19,8 +19,8 @@ static, needs no build step and has no tracking.
 |---|---|
 | `index.html`, `assets/` | The static site: one page, three languages (EN / 中文 / 日本語), client-side search over the whole index |
 | `data/at.json` | The community index, reduced to `[space_key, status, files, size_mb]` — 239,152 spaces (~7 MB, loaded in the background) |
-| `data/delta.json` | The 1,630 spaces the community index **does not contain**, with file counts / sizes where known and whether we archived them |
-| `data/archived.json` | The 506 spaces we actually downloaded (26,922 files / 83.2 GB) |
+| `data/delta.json` | The 1,630 spaces the community index **does not contain**, with file counts / sizes where known and whether an archived copy exists |
+| `data/archived.json` | The 506 spaces that have downloaded copies on the Internet Archive (26,922 files / 83.2 GB) |
 | `data/catalog.json` | All **133,981 non-empty spaces** with their Japanese titles — powers the browsable catalog (search by name *or* title, sort, filter, paginated) |
 | `data/cloud.json` | 160 term frequencies from those titles — powers the word cloud, where clicking a term filters the catalog |
 | `data/summary.json` | Every aggregate number used on the page |
@@ -71,21 +71,21 @@ the easiest to merge.
 ### 这个仓库是什么
 
 `uploader.jp` / `getuploader.com`（日本免费上传器网络，**2026-11-25 关闭**）的空间索引：
-把社群索引与我方补充的 1,630 个遗漏空间合并，并标注哪些已经被真正存档。
+把社群索引与补充的 1,630 个遗漏空间合并，并标注哪些已有存档副本。
 
 | 路径 | 内容 |
 |---|---|
 | `index.html` / `assets/` | 静态站点：单页、三语（英/中/日）、可对全量索引做客户端搜索 |
 | `data/at.json` | 社群索引精简版 `[空间键, 状态, 文件数, 容量MB]`，239,152 条（约 7 MB，后台加载） |
-| `data/delta.json` | 社群索引**没有**的 1,630 个空间（含已知文件数/容量、是否已由我方存档） |
-| `data/archived.json` | 我方实际下载存档的 506 个空间（26,922 文件 / 83.2 GB） |
+| `data/delta.json` | 社群索引**没有**的 1,630 个空间（含已知文件数/容量、是否已有存档副本） |
+| `data/archived.json` | 已有下载副本的 506 个空间（26,922 文件 / 83.2 GB） |
 | `data/summary.json` | 页面用到的全部汇总数字 |
 | `data/*.csv` | 上述两份清单的 CSV 版，便于并进别人的 seed list |
 
 **能做什么**：① 按空间名/标题搜索；② **目录**：13.4 万个非空空间，可按文件数/容量/下载数排序、按子域与"只看已存档"筛选、分页浏览；③ **云图**：从标题里抽出 160 个词（置き場 / 倉庫 / 素材 / 音源 / 立ち絵 / MUGEN / 東方 / 太鼓 …），点词直接筛目录。
 
-**数字**：社群索引 239,152 空间 / 2,706,154 文件 / 9.98 TB；我方补充 **1,630 个遗漏空间**
-（已知 35,471 文件 / 159.8 GB，抽 30 个验证约 83% 真实存活）；扫描 2,526 个空间；实际下载存档
+**数字**：社群索引 239,152 空间 / 2,706,154 文件 / 9.98 TB；补充 **1,630 个遗漏空间**
+（已知 35,471 文件 / 159.8 GB，抽 30 个验证约 83% 真实存活）；扫描 2,526 个空间；其中有下载副本的是
 **506 个空间 / 26,922 文件 / 83.2 GB**；另有 `sample` 空间的整站页面存档（9,748 URL / 9,905 响应 / 83 MB WARC）。
 
 许可：代码 MIT；**数据不重新授权**，来源与许可逐项见 [DATA-SOURCES.md](DATA-SOURCES.md)。

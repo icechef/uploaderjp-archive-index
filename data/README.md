@@ -13,8 +13,8 @@ Aggregates used on the page. Shape:
 {
   "generated": "2026-10-27 08:14",
   "at":       { "spaces": 239152, "files": 2706154, "mb": 9982089, "source": "uploaderjp-archive.surge.sh" },
-  "mine":     { "spaces": 2526, "files": 102568, "mb": 367576 },     // spaces we scanned
-  "archived": { "spaces": 506, "files": 26922, "mb": 83206 },        // spaces we downloaded
+  "mine":     { "spaces": 2526, "files": 102568, "mb": 367576 },     // spaces scanned for this index
+  "archived": { "spaces": 506, "files": 26922, "mb": 83206 },        // spaces with downloaded copies
   "delta":    { "count": 1630, "files": 35471, "mb": 156100,
                 "archived": 136, "sample_size": 30,
                 "sample_alive": 25, "sample_404": 3, "sample_odd": 2 },
@@ -59,11 +59,11 @@ Aggregates used on the page. Shape:
              "f": 175, "mb": 1564.6, "st": "可访问", "ar": false }, …] }
 ```
 
-`null` means **we did not scan that space** — it does not mean "0 files". Sorted by `mb` descending.
+`null` means **not scanned for this index** — it does not mean "0 files". Sorted by `mb` descending.
 
 ---
 
-## `archived.json` — spaces we actually downloaded
+## `archived.json` — spaces with downloaded copies
 
 ```jsonc
 { "source": "this project (空间存档清单.csv)",
