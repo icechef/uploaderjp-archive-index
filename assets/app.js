@@ -331,6 +331,12 @@
     }).join("");
     byId("link-warc-item").href = state.summary.items.warc;
     byId("link-files-item").href = state.summary.items.files;
+    var demo = byId("link-replay-demo");
+    if (demo) {
+      // 用当前站点的地址拼，仓库/域名变了也不用改
+      var self = location.origin + location.pathname.replace(/[^/]*$/, "");
+      demo.href = "https://replayweb.page/?source=" + encodeURIComponent(self + "data/demo-sample.warc.gz");
+    }
   }
 
   function renderProse() {

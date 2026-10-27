@@ -4,8 +4,8 @@ An index of spaces on `uploader.jp` / `getuploader.com` (a Japanese free file-ho
 **shuts down on 2026-11-25**), combining the community index with 1,630 spaces that index misses,
 plus what has actually been archived.
 
-**Live site**: enable GitHub Pages for this repository (see [Deploy](#deploy)) — the page is fully
-static, needs no build step and has no tracking.
+**Live site**: <https://icechef.github.io/uploaderjp-archive-index/> — static, no build step, no tracking.
+The site is deployed by GitHub Actions (`.github/workflows/pages.yml`); a push to `main` publishes it.
 
 Maintained by [@icechef](https://github.com/icechef) · corrections and additions are welcome via
 [GitHub Issues](https://github.com/icechef/uploaderjp-archive-index/issues).

@@ -6,6 +6,7 @@
  */
 window.I18N = {
   en: {
+    "sample.link.replay": "▶ Try online replay (106 records)",
     "view.cards": "Cards",
     "view.table": "Table",
     "sample.cmd.replay": "Replay locally: download a .warc.gz part, then drag it into replayweb.page",
@@ -158,6 +159,7 @@ window.I18N = {
   },
 
   zh: {
+    "sample.link.replay": "▶ 在线回放演示（106 条记录）",
     "view.cards": "卡片",
     "view.table": "表格",
     "sample.cmd.replay": "本地回放：下载任一 .warc.gz 分卷，拖进 replayweb.page",
@@ -310,6 +312,7 @@ window.I18N = {
   },
 
   ja: {
+    "sample.link.replay": "▶ オンライン再生を試す（106 件）",
     "view.cards": "カード",
     "view.table": "表",
     "sample.cmd.replay": "ローカル再生：.warc.gz を 1 本ダウンロードし、replayweb.page にドラッグ",
