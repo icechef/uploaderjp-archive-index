@@ -129,24 +129,24 @@ window.I18N = {
     "sample.php": "php files 404 at the source",
     "sample.zero": "zero-byte files",
 
-    "method.title": "Method, gaps and caveats",
-    "method.how": "How the index was built",
+    "method.title": "Method and limitations",
+    "method.how": "Sources and processing",
     "method.how.list": [
-      "The base list is the community index (uploaderjp-archive.surge.sh); spaces are also enumerated from search engines, wiki link-lists and shared attachments.",
-      "Each space's file count and disk usage are read from the 統計 block at the bottom of the space's own page — the only place the totals exist.",
-      "Scanning and downloading go through a real browser session (CDP): the site sits behind Cloudflare and the download path needs a POST token.",
-      "Pages are captured as WARC with WARC-Target-URI on every record, plus a CDX index carrying offsets; the technical appendix shows one space captured end to end.",
-      "Snapshots of the original URLs are requested through the Internet Archive's public capture API; only captures that come back with a success status are counted."
+      "The space list is based on the community crawl published at uploaderjp-archive.surge.sh; entries outside that baseline were added from search-engine results, wiki link lists and public share attachments.",
+      "File count and disk usage for each space are read from the 統計 block at the bottom of that space's page — the only place the site publishes an aggregate figure. Spaces that were not scanned carry null, never 0.",
+      "Page capture and file download both run through a controlled browser session (CDP) so the site's Cloudflare checks are satisfied; a file download additionally requires a one-time token issued by the page's agree form.",
+      "Pages are archived as WARC with WARC-Target-URI and the original response headers (transport-level compression headers removed), plus a CDX index carrying offset/length so pywb can seek directly to a record.",
+      "Snapshots of the original URLs are submitted through the Internet Archive's public capture API; only records returning a success status with a snapshot timestamp are counted as archived."
     ],
-    "method.gaps": "Known gaps",
+    "method.gaps": "Known limitations",
     "method.gaps.list": [
-      "506 of the 2,526 scanned spaces have file copies on the Internet Archive; the rest is metadata only.",
-      "Inside the sample space: 2,770 of 8,394 files are password-locked (no download possible); 3 .php files return 404 at the source; 84 files are 0 bytes by design.",
-      "Wayback had snapshots for only ~11% of the per-file detail pages when this index was compiled (sample of 36 CDX lookups, 2026-10-27).",
-      "A single snapshot in October 2026 — uploads made between then and the shutdown are not covered.",
-      "The content is Japanese and mostly game mods / assets / audio; this is a file host, not a text archive."
+      "Of the 2,526 spaces scanned, 506 have file-level copies on the Internet Archive; the remainder is metadata only and holds no file bytes.",
+      "Within the fully captured space: 2,770 of 8,394 files are password-protected and could not be downloaded; 3 .php files return 404 at the source; 84 files are 0 bytes at the source by design.",
+      "A sample of 36 CDX lookups during compilation put historical Wayback coverage of per-file detail pages at roughly 11%, so detail-page coverage here rests on the current capture.",
+      "All data is a single snapshot from October 2026; uploads made between then and service termination (2026-11-25) are not included.",
+      "Content is predominantly Japanese and concentrated in game mods, assets and audio; as a file host, the site carries little body text."
     ],
-    "method.credits": "Data credit: the base index is the community crawl published at uploaderjp-archive.surge.sh ({at} spaces); this page re-hosts a derived subset, adds the spaces that index does not contain, and notes where archived copies exist. The service shuts down on {date}.",
+    "method.credits": "Provenance: the base index is the community crawl published at uploaderjp-archive.surge.sh ({at} spaces). This page re-hosts a reduced derivative of it, adds the spaces that index does not contain, and marks which spaces have archived copies. The service terminates on {date}.",
     "source.note": "Sources and licences",
 
     "foot.built": "Static page — no tracking, no build step. Generated {gen}.",
@@ -277,24 +277,24 @@ window.I18N = {
     "sample.php": "源站 404 的 php",
     "sample.zero": "0 字节文件",
 
-    "method.title": "方法、缺口与限制",
-    "method.how": "索引是怎么做的",
+    "method.title": "方法与局限",
+    "method.how": "数据来源与处理",
     "method.how.list": [
-      "基础清单来自社群索引（uploaderjp-archive.surge.sh）；另外用搜索引擎、wiki 链接页、分享附件枚举。",
-      "每个空间的文件数与容量取自该空间首页底部的「統計」区块 —— 那是唯一有汇总数字的地方。",
-      "扫描与下载都走真实浏览器会话（CDP）：站点在 Cloudflare 后面，且下载需要 POST token。",
-      "页面存成 WARC，每条记录都带 WARC-Target-URI，并生成带偏移量的 CDX 索引；完整跑通一个空间的例子放在文末技术附录。",
-      "原网址的快照通过 Internet Archive 的公开抓取接口提交，只有返回成功状态、拿到快照时间戳的才计入。"
+      "空间清单以社群抓取索引 uploaderjp-archive.surge.sh 为基线；基线未收录的条目由搜索引擎结果、wiki 链接页与公开分享附件补充。",
+      "每个空间的文件数与磁盘占用读取自该空间页底部的「統計」区块 —— 这是站点唯一给出汇总口径的位置。未扫描的空间记为 null，不按 0 处理。",
+      "页面抓取与文件下载均通过受控浏览器会话（CDP）完成，以满足站点的 Cloudflare 校验；文件下载还需经页面同意表单取得一次性 token。",
+      "页面以 WARC 归档，每条记录带 WARC-Target-URI 与原响应头（已剔除传输层压缩字段），并生成带 offset/length 的 CDX 索引，可由 pywb 直接定位回放。",
+      "原网址的归档快照通过 Internet Archive 的公开抓取接口提交；仅将返回 success 且带快照时间戳的记录计为已归档，提交失败不计入。"
     ],
-    "method.gaps": "已知缺口",
+    "method.gaps": "已知局限",
     "method.gaps.list": [
-      "2,526 个已扫描空间中，506 个有文件副本存放在 Internet Archive，其余仅有元数据。",
-      "sample 空间内：8,394 个文件里 2,770 个需要密码（无法下载）；3 个 .php 源站 404；84 个是源站本来就 0 字节。",
-      "整理本索引时，Wayback 对详情页的历史快照覆盖只有约 11%（抽样 36 次 CDX 查询，2026-10-27）。",
-      "2026 年 10 月的单次快照 —— 之后到关站前新增的上传不在其中。",
-      "内容是日文，以游戏 MOD / 素材 / 音源为主；这是文件托管站，不是文字存档。"
+      "已扫描的 2,526 个空间中，506 个具备文件级归档副本，其余仅有元数据，不含文件本体。",
+      "在完成全量归档的空间中：8,394 个文件里 2,770 个受密码保护、无法下载；3 个 .php 文件在源站已返回 404；84 个文件在源站本身即为 0 字节。",
+      "整理期间抽样 36 次 CDX 查询，文件详情页在 Wayback 中的历史快照覆盖率约为 11%，故本索引的详情页覆盖主要依赖当期归档。",
+      "所有数据为 2026 年 10 月的单次快照；此后至服务终止（2026-11-25）期间新增的上传不在其中。",
+      "站点内容以日文为主，类型集中于游戏 MOD、素材与音源；作为文件托管服务，其页面正文本体量有限。"
     ],
-    "method.credits": "数据来源说明：基础索引是 uploaderjp-archive.surge.sh 公布的社群抓取结果（{at} 个空间），本页重新托管其派生子集，补充该索引未收录的空间，并标注已有的存档副本。服务将于 {date} 关闭。",
+    "method.credits": "数据来源：基础索引为 uploaderjp-archive.surge.sh 公布的社群抓取结果（{at} 个空间）。本页重新托管其精简派生子集，并补充该索引未收录的空间、标注已归档副本。服务将于 {date} 终止。",
     "source.note": "数据来源与许可",
 
     "foot.built": "纯静态页面，无追踪、无构建步骤。生成于 {gen}。",
@@ -425,24 +425,24 @@ window.I18N = {
     "sample.php": "ソース側 404 の php",
     "sample.zero": "0 バイトのファイル",
 
-    "method.title": "方法・欠落・注意点",
-    "method.how": "索引の作り方",
+    "method.title": "方法と限界",
+    "method.how": "データの出典と処理",
     "method.how.list": [
-      "基礎リストはコミュニティ索引（uploaderjp-archive.surge.sh）。加えて検索エンジン・wiki のリンク集・共有添付から列挙。",
-      "各スペースのファイル数と容量は、スペース自身のページ下部にある「統計」ブロックから取得（合計が載る唯一の場所）。",
-      "走査とダウンロードは実ブラウザのセッション（CDP）経由。サイトは Cloudflare の背後にあり、ダウンロードには POST トークンが必要。",
-      "ページは WARC として保存し、各レコードに WARC-Target-URI を付け、オフセット付き CDX も生成。ひとつのスペースを通しで保存した例は末尾の技術付録に。",
-      "元 URL のスナップショットは Internet Archive の公開キャプチャ API で申請し、成功応答（タイムスタンプ）が返ったものだけを計上します。"
+      "スペース一覧は uploaderjp-archive.surge.sh が公開しているコミュニティクロールを基礎とし、そこに無い項目は検索エンジンの結果・wiki のリンク集・公開された共有添付から補完しています。",
+      "各スペースのファイル数とディスク使用量は、そのスペースのページ下部にある「統計」ブロックから取得しています。集計値が公表されている唯一の箇所です。未走査のスペースは null とし、0 としては扱いません。",
+      "ページ取得とファイルダウンロードはいずれも制御されたブラウザセッション（CDP）経由で行い、サイトの Cloudflare 検証を通過します。ファイル取得にはページの同意フォームが発行するワンタイムトークンが必要です。",
+      "ページは WARC として保存し、各レコードに WARC-Target-URI と元のレスポンスヘッダ（転送層の圧縮ヘッダは除去）を記録、offset/length を持つ CDX 索引も生成するため pywb で直接参照できます。",
+      "元 URL のスナップショットは Internet Archive の公開キャプチャ API に申請し、success とスナップショット時刻が返ったレコードのみを保存済みとして計上します。"
     ],
-    "method.gaps": "既知の欠落",
+    "method.gaps": "既知の限界",
     "method.gaps.list": [
-      "走査した 2,526 スペースのうち、ファイル副本が Internet Archive にあるのは 506。残りはメタデータのみ。",
-      "sample スペース内: 8,394 ファイル中 2,770 はパスワード付き（ダウンロード不可）、3 つの .php はソース側 404、84 は元から 0 バイト。",
-      "本索引の作成時点で、Wayback の詳細ページのスナップショットは約 11% のみ（CDX 36 件の標本、2026-10-27）。",
-      "2026 年 10 月の単一スナップショット。以降、終了までの新規アップロードは含まれません。",
-      "内容は日本語のゲーム MOD・素材・音源が中心。ファイルホストでありテキストアーカイブではありません。"
+      "走査した 2,526 スペースのうち、ファイル単位の保存副本があるのは 506 スペースで、残りはメタデータのみ（ファイル本体は含みません）。",
+      "全量保存したスペース内では、8,394 ファイル中 2,770 がパスワード保護のため取得不可、3 つの .php はソース側で 404、84 ファイルは元から 0 バイトです。",
+      "作成期間中の CDX 照会 36 件の標本では、ファイル詳細ページの Wayback における過去のスナップショット網羅率は約 11% でした。したがって本索引の詳細ページ網羅は当期の取得に依存します。",
+      "データは 2026 年 10 月の単一スナップショットです。以降、サービス終了（2026-11-25）までの新規アップロードは含まれません。",
+      "内容は日本語が中心で、ゲーム MOD・素材・音源に集中しています。ファイルホスティングサービスであるため、ページ本文の分量は限定的です。"
     ],
-    "method.credits": "データ出典: 基礎索引は uploaderjp-archive.surge.sh が公開しているコミュニティのクロール結果（{at} スペース）。本ページはその派生子集合を再ホストし、索引に無いスペースを追加、保存副本の有無を示します。サービスは {date} に終了します。",
+    "method.credits": "出典：基礎索引は uploaderjp-archive.surge.sh が公開しているコミュニティクロール（{at} スペース）。本ページはその縮約派生子集合を再ホストし、索引に無いスペースの追加と保存副本の有無を示します。サービスは {date} に終了します。",
     "source.note": "出典とライセンス",
 
     "foot.built": "静的ページ。トラッキング・ビルド工程なし。生成 {gen}。",
