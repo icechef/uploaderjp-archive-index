@@ -139,6 +139,13 @@
     return '<span class="pill pill--' + (kind || "idle") + '">' + text + "</span>";
   }
 
+  function statusPill(code) {
+    var known = { ok: "ok", gone: "gone", locked: "locked", empty: "empty", unscanned: "unscanned", other: "other" };
+    var key = known[code] ? "status." + known[code] : "status.other";
+    var kind = code === "ok" ? "ok" : code === "gone" ? "gone" : "idle";
+    return pill(t(key), kind);
+  }
+
   function yesNo(flag) {
     return pill(flag ? t("yes") : t("no"), flag ? "ok" : "idle");
   }
@@ -148,6 +155,12 @@
   function compare(records, key, dir) {
     return records.slice().sort(function (a, b) {
       var av = a[key], bv = b[key];
+      // empty values (e.g. titles of spaces the community index does not know) always sort last
+      if (key === "title" || key === "status") {
+        if (!av && !bv) return 0;
+        if (!av) return 1;
+        if (!bv) return -1;
+      }
       if (key === "k" || key === "title" || key === "status") {
         av = String(av || ""); bv = String(bv || "");
         return dir * (av < bv ? -1 : av > bv ? 1 : 0);
@@ -168,7 +181,9 @@
 
     var head = "<tr>" + columns.map(function (col) {
       var isSorted = st.sort === col.key;
-      return '<th class="sortable' + (isSorted ? " sorted" : "") + (col.num ? " num" : "") +
+      var ariaSort = isSorted ? (st.dir === 1 ? "ascending" : "descending") : "none";
+      return '<th scope="col" aria-sort="' + ariaSort + '" class="sortable' + (isSorted ? " sorted" : "") +
+        (col.num ? " num" : "") +
         '" data-table="' + name + '" data-key="' + col.key + '" title="' + t("pager.sort") + '">' +
         col.label + '<span class="sort-ind">' + (isSorted ? (st.dir === 1 ? "▲" : "▼") : "↕") + "</span></th>";
     }).join("") + "</tr>";
@@ -180,8 +195,8 @@
       }).join("") + "</tr>";
     }).join("");
 
-    byId(name + "-table").innerHTML = head + (sorted.length ? body :
-      '<tr><td colspan="' + columns.length + '"><span class="status">' + emptyText + "</span></td></tr>");
+    byId(name + "-table").innerHTML = "<thead>" + head + "</thead><tbody>" + (sorted.length ? body :
+      '<tr><td colspan="' + columns.length + '"><span class="status">' + emptyText + "</span></td></tr>") + "</tbody>";
 
     var pager = byId(name + "-pager");
     if (!pager) return;
@@ -325,7 +340,7 @@
     var records = searchRecords();
     var columns = [
       { key: "k", label: t("th.space"), cell: function (r) { return spaceLink(r.k); } },
-      { key: "status", label: t("th.status"), cell: function (r) { return pill(r.status || "—"); } },
+      { key: "status", label: t("th.status"), cell: function (r) { return statusPill(r.status); } },
       { key: "files", label: t("th.files"), num: true, cell: function (r) { return num(r.files); } },
       { key: "mb", label: t("th.size"), num: true, cell: function (r) { return size(r.mb); } },
       {
@@ -344,9 +359,8 @@
 
     var typed = (byId("search-input").value || "").trim();
     byId("search-status").textContent = typed.length < 2
-      ? (state.atMap ? t("search.ready", { n: num(state.atRows.length) })
-                     : t("search.loading", { n: num(state.summary ? state.summary.at.spaces : 0) }))
-      : t("search.hits", { n: num(records.length) });
+      ? (state.atMap ? t("search.ready", { n: num(state.atRows.length) }) : t("search.idle"))
+      : t("search.hits", { n: num(records.length) }) + (state.atMap ? "" : " · " + t("search.idle"));
   }
 
   /* ---------------- catalog ---------------- */
@@ -489,7 +503,7 @@
       { key: "k", label: t("th.space"), cell: function (r) { return spaceLink(r.k); } },
       { key: "files", label: t("th.files"), num: true, cell: function (r) { return num(r.files); } },
       { key: "mb", label: t("th.size"), num: true, cell: function (r) { return r.mb === null ? "—" : size(r.mb); } },
-      { key: "status", label: t("th.status"), cell: function (r) { return pill(r.status || "—"); } },
+      { key: "status", label: t("th.status"), cell: function (r) { return statusPill(r.status); } },
       { key: "archived", label: t("th.arch"), cell: function (r) { return yesNo(r.archived); } }
     ];
     renderTable("delta", records, columns, t("catalog.empty"));
@@ -512,6 +526,26 @@
     ];
     renderTable("archived", records, columns, t("catalog.empty"));
     byId("archived-status").textContent = t("archived.hint", { n: num(records.length) });
+  }
+
+  /* ---------------- community index (7 MB, on demand) ---------------- */
+
+  function ensureIndex() {
+    if (state.atMap || state.indexLoading) return;
+    state.indexLoading = true;
+    byId("search-status").textContent = t("search.loading", {
+      n: num(state.summary ? state.summary.at.spaces : 0)
+    });
+    fetchJson("data/at.json").then(function (payload) {
+      state.atRows = payload.rows;
+      state.atMap = new Map(payload.rows.map(function (r) { return [r[0], r]; }));
+      state.indexLoading = false;
+      renderSearch();
+      if (state.catalogLoaded) renderCatalog();   // fill the "in community index" column
+    }).catch(function (err) {
+      state.indexLoading = false;
+      byId("search-status").textContent = "index failed to load: " + err.message;
+    });
   }
 
   /* ---------------- boot ---------------- */
@@ -538,7 +572,9 @@
     bindTableControls();
 
     byId("search-input").value = params.get("q") || "";
+    byId("search-input").addEventListener("focus", ensureIndex);
     byId("search-input").addEventListener("input", function () {
+      if (this.value.trim().length >= 2) ensureIndex();
       tableState("search").page = 0;
       renderSearch();
     });
@@ -566,17 +602,15 @@
     byId("catalog-big").addEventListener("change", function () { tableState("catalog").page = 0; renderCatalog(); });
 
     if ("IntersectionObserver" in window) {
+      // 只为云图兜底（云图本身已首屏加载）；目录体积 7 MB，必须由显式操作触发：
+      // 输入框聚焦/输入、导航点击、#catalog hash、?cat= 参数
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          if (entry.target.id === "cloud") loadCloud();
-          if (entry.target.id === "catalog") loadCatalog();
+          if (entry.isIntersecting && entry.target.id === "cloud") loadCloud();
         });
-      }, { rootMargin: "250px" });
-      ["catalog", "cloud"].forEach(function (id) {
-        var el = byId(id);
-        if (el) io.observe(el);
-      });
+      }, { rootMargin: "0px", threshold: 0.01 });
+      var cloudSection = byId("cloud");
+      if (cloudSection) io.observe(cloudSection);
     }
     window.addEventListener("hashchange", function () {
       if (location.hash === "#cloud") loadCloud();
@@ -603,14 +637,7 @@
       state.archived.forEach(function (a) { state.archivedKeys.add(a.k); });
       applyI18n();
 
-      fetchJson("data/at.json").then(function (payload) {
-        state.atRows = payload.rows;
-        state.atMap = new Map(payload.rows.map(function (r) { return [r[0], r]; }));
-        renderSearch();
-        if (state.catalogLoaded) renderCatalog();   // fill the "in community index" column
-      }).catch(function (err) {
-        byId("search-status").textContent = "index failed to load: " + err.message;
-      });
+      if ((params.get("q") || "").trim().length >= 2) ensureIndex();
     }).catch(function (err) {
       byId("search-status").textContent = "data failed to load: " + err.message;
     });

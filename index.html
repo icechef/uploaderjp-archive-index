@@ -9,6 +9,28 @@
   <meta property="og:description" content="Community index of uploader.jp spaces, plus 1,630 spaces it missed and what has been archived before the 2026-11-25 shutdown.">
   <meta property="og:type" content="website">
   <link rel="stylesheet" href="assets/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "name": "uploader.jp / getuploader.com archive index",
+    "alternateName": "uploaderjp archive index",
+    "description": "Index of spaces on the Japanese file host uploader.jp / getuploader.com (service ends 2026-11-25): the community crawl of 239,152 spaces, the 1,630 spaces it does not contain, per-space file counts and sizes, and which spaces have archived copies on the Internet Archive.",
+    "url": "./",
+    "isBasedOn": "https://uploaderjp-archive.surge.sh/meta.json",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "creator": { "@type": "Organization", "name": "uploaderjp archive index contributors" },
+    "temporalCoverage": "2026-10-26/2026-11-25",
+    "keywords": ["uploader.jp", "getuploader", "web archiving", "file host", "dataset catalogue"],
+    "variableMeasured": ["space key", "status", "file count", "size in MB", "downloads"],
+    "distribution": [
+      { "@type": "DataDownload", "name": "spaces missing from the community index", "encodingFormat": "text/csv", "contentUrl": "data/at-supplement-delta.csv" },
+      { "@type": "DataDownload", "name": "spaces with archived copies", "encodingFormat": "text/csv", "contentUrl": "data/at-supplement-archived.csv" },
+      { "@type": "DataDownload", "name": "full community index (reduced fields)", "encodingFormat": "application/json", "contentUrl": "data/at.json" },
+      { "@type": "DataDownload", "name": "browsable catalogue", "encodingFormat": "application/json", "contentUrl": "data/catalog.json" }
+    ]
+  }
+  </script>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🗄️</text></svg>">
 </head>
 <body>
@@ -160,18 +182,27 @@ grep "download/1234" cdx_offsets.jsonl   # → offset/length, then seek</pre>
 
   <section id="sources" aria-labelledby="sources-title">
     <h2 id="sources-title" data-i18n="sources.title">Data sources</h2>
-    <ul class="clean">
-      <li><span data-i18n="sources.original">Original service</span> —
+    <div class="kv kv--sources">
+      <b data-i18n="sources.original">Original service</b>
+      <span>
         <a href="https://uploader.jp/" target="_blank" rel="noopener noreferrer">uploader.jp</a> ·
         <a href="https://getuploader.com/" target="_blank" rel="noopener noreferrer">getuploader.com</a> ·
-        <a href="https://u1.getuploader.com/sample/" target="_blank" rel="noopener noreferrer">u1.getuploader.com/sample/</a></li>
-      <li><span data-i18n="sources.community">Community index</span> —
+        <a href="https://u1.getuploader.com/sample/" target="_blank" rel="noopener noreferrer">u1.getuploader.com/sample/</a>
+      </span>
+      <b data-i18n="sources.community">Community index</b>
+      <span>
         <a href="https://uploaderjp-archive.surge.sh/" target="_blank" rel="noopener noreferrer">uploaderjp-archive.surge.sh</a>
-        (<a href="https://uploaderjp-archive.surge.sh/meta.json" target="_blank" rel="noopener noreferrer">meta.json</a>)</li>
-      <li><span data-i18n="sources.items">Internet Archive copies</span> —
+        <span class="dim">· meta.json</span>
+        <a href="https://uploaderjp-archive.surge.sh/meta.json" target="_blank" rel="noopener noreferrer">(direct)</a>
+      </span>
+      <b data-i18n="sources.items">Internet Archive copies</b>
+      <span>
         <a href="https://archive.org/details/u1-getuploader-sample-archive" target="_blank" rel="noopener noreferrer">files + index</a> ·
-        <a href="https://archive.org/details/u1-getuploader-sample-warc-20261026" target="_blank" rel="noopener noreferrer">page WARC</a></li>
-    </ul>
+        <a href="https://archive.org/details/u1-getuploader-sample-warc-20261026" target="_blank" rel="noopener noreferrer">page WARC</a>
+      </span>
+      <b data-i18n="sources.provenance">Provenance</b>
+      <span><a href="DATA-SOURCES.md">DATA-SOURCES.md</a> · <a href="data/README.md">data/README.md</a></span>
+    </div>
     <p class="status" data-i18n="sources.note"></p>
   </section>
 

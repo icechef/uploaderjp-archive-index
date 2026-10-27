@@ -6,6 +6,14 @@
  */
 window.I18N = {
   en: {
+    "status.ok": "alive",
+    "status.gone": "404",
+    "status.locked": "password",
+    "status.empty": "empty",
+    "status.unscanned": "not scanned",
+    "status.other": "other",
+    "sources.provenance": "Provenance",
+    "search.idle": "type at least 2 characters — the 239,152-space index loads on first use",
     "pager.sort": "click to sort",
     "pager.prev": "Prev",
     "pager.next": "Next",
@@ -138,6 +146,14 @@ window.I18N = {
   },
 
   zh: {
+    "status.ok": "可访问",
+    "status.gone": "404",
+    "status.locked": "需密码",
+    "status.empty": "空空间",
+    "status.unscanned": "未扫描",
+    "status.other": "其他",
+    "sources.provenance": "溯源文档",
+    "search.idle": "输入至少 2 个字符 —— 23.9 万条索引会在首次使用时加载",
     "pager.sort": "点击排序",
     "pager.prev": "上一页",
     "pager.next": "下一页",
@@ -270,6 +286,14 @@ window.I18N = {
   },
 
   ja: {
+    "status.ok": "生存",
+    "status.gone": "404",
+    "status.locked": "パスワード",
+    "status.empty": "空",
+    "status.unscanned": "未走査",
+    "status.other": "その他",
+    "sources.provenance": "出典資料",
+    "search.idle": "2 文字以上入力してください — 239,152 件の索引は初回利用時に読み込みます",
     "pager.sort": "クリックで並べ替え",
     "pager.prev": "前へ",
     "pager.next": "次へ",
