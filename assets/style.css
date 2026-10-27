@@ -248,16 +248,6 @@ th.sorted .sort-ind { opacity: 1; color: var(--accent); }
 .gaps li::marker { color: var(--warn); }
 .steps li::marker { color: var(--accent); font-weight: 600; }
 
-/* ---------- coverage bars ---------- */
-.cov { display: grid; gap: 12px; margin: 12px 0 4px; }
-.cov-row { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px; }
-.cov-row .cov-head { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; margin-bottom: 7px; }
-.cov-row .cov-head b { font-weight: 500; }
-.cov-row .cov-head span { color: var(--dim); font-variant-numeric: tabular-nums; }
-.cov-track { height: 8px; background: #0b0e12; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
-.cov-fill { height: 100%; background: linear-gradient(90deg, #4f9bea, #6cb6ff); }
-.cov-fill--done { background: linear-gradient(90deg, #3f9e5a, #5ec26a); }
-
 /* ---------- skeleton rows while the catalog streams in ---------- */
 .skeleton span {
   display: inline-block; height: 10px; border-radius: 4px;
@@ -268,3 +258,17 @@ th.sorted .sort-ind { opacity: 1; color: var(--accent); }
 
 /* ---------- byline ---------- */
 .byline { color: var(--dim); font-size: 12.5px; }
+
+/* ---------- technical appendix (collapsed by default) ---------- */
+.appendix {
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 0 18px 14px;
+}
+.appendix > summary {
+  cursor: pointer; padding: 14px 0; font-size: 15px; font-weight: 500; color: var(--dim);
+  list-style: none;
+}
+.appendix > summary::-webkit-details-marker { display: none; }
+.appendix > summary::before { content: "▸ "; color: var(--accent); }
+.appendix[open] > summary { color: var(--fg); }
+.appendix[open] > summary::before { content: "▾ "; }

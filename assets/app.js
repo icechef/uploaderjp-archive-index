@@ -24,7 +24,6 @@
     delta: [],                  // { k, u, f, mb, st, ar }
     archived: [],               // { k, u, f, mb, dl, st }
     archivedKeys: new Set(),
-    coverage: null,
     credit: "uploaderjp archive index",
     catalog: [],                // [key, title, files, mb, downloads]
     catalogLoaded: false,
@@ -93,7 +92,6 @@
       renderSample();
       renderProse();
       renderFooter();
-      renderCoverage();
       renderSearch();
       renderDelta();
       renderArchived();
@@ -314,26 +312,6 @@
     byId("foot-built").textContent = t("foot.built", { gen: state.summary.generated });
     byId("byline").innerHTML = t("byline.made", { name: state.credit }) +
       ' · <a href="DATA-SOURCES.md">' + t("byline.license") + "</a>";
-  }
-
-  function renderCoverage() {
-    var c = state.coverage;
-    if (!c) return;
-    var labels = { list: "coverage.list", detail: "coverage.detail" };
-    byId("coverage-updated").textContent = t("coverage.updated", { gen: c.generated });
-    byId("coverage-bars").innerHTML = c.layers.map(function (layer) {
-      var pct = layer.expected ? (layer.done / layer.expected) * 100 : 0;
-      var cls = pct >= 100 ? "cov-fill cov-fill--done" : "cov-fill";
-      return '<div class="cov-row">' +
-        '<div class="cov-head"><b>' + t(labels[layer.key] || layer.key) + "</b>" +
-        "<span>" + num(layer.done) + " / " + num(layer.expected) + " · " + pct.toFixed(1) + "%</span></div>" +
-        '<div class="cov-track"><div class="' + cls + '" style="width:' + Math.min(100, pct).toFixed(1) + '%"></div></div>' +
-        "</div>";
-    }).join("");
-    var pending = c.total.pending || 0;
-    byId("coverage-status").textContent =
-      t("coverage.total") + ": " + num(c.total.done) + " / " + num(c.total.expected) +
-      (pending ? " · " + t("coverage.pending", { n: num(pending) }) : "");
   }
 
   /* ---------------- search (community index + delta) ---------------- */
@@ -724,12 +702,10 @@
       fetchJson("data/summary.json"),
       fetchJson("data/delta.json"),
       fetchJson("data/archived.json"),
-      fetchJson("data/coverage.json")
     ]).then(function (results) {
       state.summary = results[0];
       state.delta = results[1].rows;
       state.archived = results[2].rows;
-      state.coverage = results[3];
       state.delta.forEach(function (d) { if (d.ar) state.archivedKeys.add(d.k); });
       state.archived.forEach(function (a) { state.archivedKeys.add(a.k); });
       applyI18n();

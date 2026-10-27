@@ -43,8 +43,6 @@
         <a href="#cloud" data-i18n="nav.cloud">Word cloud</a>
         <a href="#delta" data-i18n="nav.delta">Missed spaces</a>
         <a href="#archived" data-i18n="nav.archived">Archived</a>
-        <a href="#coverage" data-i18n="nav.coverage">Coverage</a>
-        <a href="#sample" data-i18n="nav.sample">Deep dive</a>
         <a href="#method" data-i18n="nav.method">Method</a>
       </nav>
       <div class="lang-switch" role="group" aria-label="Language">
@@ -144,33 +142,7 @@
       <div class="pager" id="archived-pager"></div>
     </section>
 
-    <section id="coverage" aria-labelledby="coverage-title">
-      <h2 id="coverage-title"><span data-i18n="coverage.title">Wayback coverage</span><span class="tag" id="coverage-updated"></span></h2>
-      <p class="lead" data-i18n="coverage.lead"></p>
-      <div id="coverage-bars" class="cov"></div>
-      <p class="status" id="coverage-status"></p>
-    </section>
 
-    <section id="sample" aria-labelledby="sample-title">
-      <h2 id="sample-title"><span data-i18n="sample.title">Deep dive: the sample space</span><span class="tag" data-i18n="sample.tag">complete archive</span></h2>
-      <div class="stat-grid" id="sample-kv"></div>
-      <div class="note note--ok" data-i18n="sample.note"></div>
-      <h3 style="margin-top:18px" data-i18n="sample.replay">Replay / download</h3>
-      <div class="cmd-grid">
-        <div class="cmd">
-          <b data-i18n="sample.cmd.replay">Replay a WARC part in the browser</b>
-          <code class="mono">https://replayweb.page/?source=https://archive.org/download/u1-getuploader-sample-warc-20261026/&lt;part&gt;.warc.gz</code>
-        </div>
-        <div class="cmd">
-          <b data-i18n="sample.cmd.lookup">Resolve an original URL locally</b>
-          <code class="mono">grep "download/1234" cdx_offsets.jsonl</code>
-        </div>
-      </div>
-      <div class="toolbar">
-        <a class="btn" id="link-warc-item" target="_blank" rel="noopener noreferrer" data-i18n="sample.link.warc">WARC item (pages)</a>
-        <a class="btn" id="link-files-item" target="_blank" rel="noopener noreferrer" data-i18n="sample.link.files">Files item (zip + index)</a>
-      </div>
-    </section>
 
     <section id="method" aria-labelledby="method-title">
       <h2 id="method-title" data-i18n="method.title">Method, gaps and caveats</h2>
@@ -186,6 +158,30 @@
       </div>
       <div class="note" id="credits"></div>
     </section>
+    <section id="appendix" aria-labelledby="appendix-title">
+      <details class="appendix">
+        <summary id="appendix-title" data-i18n="appendix.title">Technical appendix — how one space was captured end to end</summary>
+        <p class="lead" data-i18n="appendix.note"></p>
+        <h3 data-i18n="appendix.stats">What that capture contains</h3>
+        <div class="stat-grid" id="sample-kv"></div>
+        <h3 style="margin-top:18px" data-i18n="sample.replay">Replay / download</h3>
+        <div class="cmd-grid">
+          <div class="cmd">
+            <b data-i18n="sample.cmd.replay">Replay a WARC part in the browser</b>
+            <code class="mono">https://replayweb.page/?source=https://archive.org/download/u1-getuploader-sample-warc-20261026/&lt;part&gt;.warc.gz</code>
+          </div>
+          <div class="cmd">
+            <b data-i18n="sample.cmd.lookup">Resolve an original URL locally</b>
+            <code class="mono">grep "download/1234" cdx_offsets.jsonl</code>
+          </div>
+        </div>
+        <div class="toolbar">
+          <a class="btn" id="link-warc-item" target="_blank" rel="noopener noreferrer" data-i18n="sample.link.warc">WARC item (pages)</a>
+          <a class="btn" id="link-files-item" target="_blank" rel="noopener noreferrer" data-i18n="sample.link.files">Files item (zip + index)</a>
+        </div>
+      </details>
+    </section>
+
   <section id="sources" aria-labelledby="sources-title">
     <h2 id="sources-title" data-i18n="sources.title">Data sources</h2>
     <div class="kv kv--sources">

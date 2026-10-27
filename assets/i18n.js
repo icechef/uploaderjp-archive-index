@@ -6,7 +6,6 @@
  */
 window.I18N = {
   en: {
-    "nav.coverage": "Coverage",
     "sample.cmd.replay": "Replay a WARC part in the browser",
     "sample.cmd.lookup": "Resolve an original URL locally",
     "sample.link.warc": "WARC item (pages)",
@@ -15,13 +14,6 @@ window.I18N = {
     "catalog.export": "Export this view (CSV)",
     "byline.made": "Index compiled by {name} · corrections welcome via GitHub Issues",
     "byline.license": "Code MIT · data per DATA-SOURCES.md",
-    "coverage.title": "Wayback coverage",
-    "coverage.lead": "Snapshots requested through Save Page Now, per layer. Counts come from the job receipts, not from estimates; the detail layer is still running.",
-    "coverage.list": "list / sort pages",
-    "coverage.detail": "per-file detail pages",
-    "coverage.total": "unique URLs saved",
-    "coverage.updated": "updated {gen}",
-    "coverage.pending": "{n} still in progress",
     "status.ok": "alive",
     "status.gone": "404",
     "status.locked": "password",
@@ -74,7 +66,6 @@ window.I18N = {
     "nav.search": "Search",
     "nav.delta": "Missed spaces",
     "nav.archived": "Archived",
-    "nav.sample": "Deep dive",
     "nav.method": "Method",
 
     "h1": "The uploader.jp / getuploader.com archive index",
@@ -118,13 +109,14 @@ window.I18N = {
     "delta.hint": "{n} spaces · the full list is also in the CSV",
 
     "archived.title": "Spaces with archived copies",
-    "archived.lead": "File copies for {n} spaces are held by the Internet Archive ({files} files, {mb}); the sample space also has a page-level WARC archive ({warc} URLs).",
+    "archived.lead": "File copies for {n} spaces are held by the Internet Archive ({files} files, {mb}).",
     "archived.ph": "filter by space name or subdomain…",
     "archived.csv": "Download CSV",
     "archived.hint": "{n} spaces",
 
-    "sample.title": "Deep dive: the sample space",
-    "sample.tag": "complete archive",
+    "appendix.title": "Technical appendix — how one space was captured end to end",
+    "appendix.note": "The space used here is the service's own demo space (sample), whose files are placeholder images and test uploads — it carries no content value. It was chosen because every edge case lives in it (password-locked files, .php links that are 404 at the source, 0-byte files), so it documents the pipeline end to end without pretending to be a showcase.",
+    "appendix.stats": "What that capture contains",
     "sample.replay": "Replay / download",
     "sample.note": "Every detail page and list page is in the WARC, so an original URL resolves to the archived page. The file bytes are not inside the WARC (a download needs a POST token) — they are in the zip.",
     "sample.files": "files listed",
@@ -143,8 +135,8 @@ window.I18N = {
       "The base list is the community index (uploaderjp-archive.surge.sh); spaces are also enumerated from search engines, wiki link-lists and shared attachments.",
       "Each space's file count and disk usage are read from the 統計 block at the bottom of the space's own page — the only place the totals exist.",
       "Scanning and downloading go through a real browser session (CDP): the site sits behind Cloudflare and the download path needs a POST token.",
-      "Pages are captured as WARC (9,748 unique URLs / 9,905 responses) with WARC-Target-URI on every record, plus a CDX index carrying offsets.",
-      "Wayback snapshots of the original URLs are requested through Save Page Now; the per-file detail layer is still running."
+      "Pages are captured as WARC with WARC-Target-URI on every record, plus a CDX index carrying offsets; the technical appendix shows one space captured end to end.",
+      "Snapshots of the original URLs are requested through the Internet Archive's public capture API; only captures that come back with a success status are counted."
     ],
     "method.gaps": "Known gaps",
     "method.gaps.list": [
@@ -162,7 +154,6 @@ window.I18N = {
   },
 
   zh: {
-    "nav.coverage": "覆盖率",
     "sample.cmd.replay": "在浏览器里回放某个 WARC 分卷",
     "sample.cmd.lookup": "本地按原网址反查",
     "sample.link.warc": "WARC item（页面）",
@@ -171,13 +162,6 @@ window.I18N = {
     "catalog.export": "导出当前结果（CSV）",
     "byline.made": "本索引由 {name} 整理 · 纠错请提 GitHub Issue",
     "byline.license": "代码 MIT · 数据许可见 DATA-SOURCES.md",
-    "coverage.title": "Wayback 覆盖率",
-    "coverage.lead": "通过 Save Page Now 提交的快照，按层统计。数字来自每个抓取任务的回执，不是估算；详情层仍在进行中。",
-    "coverage.list": "列表 / 排序页",
-    "coverage.detail": "文件详情页",
-    "coverage.total": "已保存的唯一 URL",
-    "coverage.updated": "更新于 {gen}",
-    "coverage.pending": "还有 {n} 个在排队",
     "status.ok": "可访问",
     "status.gone": "404",
     "status.locked": "需密码",
@@ -230,7 +214,6 @@ window.I18N = {
     "nav.search": "查询",
     "nav.delta": "遗漏空间",
     "nav.archived": "已存档",
-    "nav.sample": "深入个案",
     "nav.method": "方法",
 
     "h1": "uploader.jp / getuploader.com 存档索引",
@@ -274,13 +257,14 @@ window.I18N = {
     "delta.hint": "共 {n} 个空间 —— 完整清单见 CSV",
 
     "archived.title": "已有存档副本的空间",
-    "archived.lead": "{n} 个空间的文件副本存放在 Internet Archive（{files} 个文件 / {mb}）；sample 空间另有整站页面级 WARC 存档（{warc} 个 URL）。",
+    "archived.lead": "{n} 个空间的文件副本存放在 Internet Archive（{files} 个文件 / {mb}）。",
     "archived.ph": "按空间名或子域筛选…",
     "archived.csv": "下载 CSV",
     "archived.hint": "共 {n} 个空间",
 
-    "sample.title": "深入个案：sample 空间",
-    "sample.tag": "完整存档",
+    "appendix.title": "技术附录 —— 一个空间是怎么被完整存下来的",
+    "appendix.note": "这里用的空间是该服务自带的演示空间（sample），里面是占位图片和测试上传，本身没有内容价值。选它只是因为它把各种边缘情况都占了（带密码锁的文件、源站已 404 的 .php、0 字节文件），用它把整条流程从头到尾跑通并留档，不是拿它当成果展示。",
+    "appendix.stats": "这次存档包含什么",
     "sample.replay": "回放 / 下载",
     "sample.note": "每个详情页、列表页都在 WARC 里，所以原网址可以还原到当时的页面。文件本体不在 WARC 里（下载需要 POST token），在 zip 里。",
     "sample.files": "清单文件数",
@@ -299,8 +283,8 @@ window.I18N = {
       "基础清单来自社群索引（uploaderjp-archive.surge.sh）；另外用搜索引擎、wiki 链接页、分享附件枚举。",
       "每个空间的文件数与容量取自该空间首页底部的「統計」区块 —— 那是唯一有汇总数字的地方。",
       "扫描与下载都走真实浏览器会话（CDP）：站点在 Cloudflare 后面，且下载需要 POST token。",
-      "页面存成 WARC（9,748 个唯一 URL / 9,905 条响应），每条记录都带 WARC-Target-URI，并生成带偏移量的 CDX 索引。",
-      "原网址的 Wayback 快照通过 Save Page Now 提交；详情页那一层仍在跑。"
+      "页面存成 WARC，每条记录都带 WARC-Target-URI，并生成带偏移量的 CDX 索引；完整跑通一个空间的例子放在文末技术附录。",
+      "原网址的快照通过 Internet Archive 的公开抓取接口提交，只有返回成功状态、拿到快照时间戳的才计入。"
     ],
     "method.gaps": "已知缺口",
     "method.gaps.list": [
@@ -318,7 +302,6 @@ window.I18N = {
   },
 
   ja: {
-    "nav.coverage": "カバレッジ",
     "sample.cmd.replay": "ブラウザで WARC 分巻を再生",
     "sample.cmd.lookup": "元 URL からローカルで照合",
     "sample.link.warc": "WARC item（ページ）",
@@ -327,13 +310,6 @@ window.I18N = {
     "catalog.export": "現在の表示を CSV 出力",
     "byline.made": "本索引の整理: {name} · 訂正は GitHub Issues まで",
     "byline.license": "コードは MIT · データは DATA-SOURCES.md を参照",
-    "coverage.title": "Wayback カバレッジ",
-    "coverage.lead": "Save Page Now で申請したスナップショットを層ごとに集計。数値は各ジョブの受領結果に基づく実測値で、推定ではありません。詳細ページ層は進行中です。",
-    "coverage.list": "一覧 / 並べ替えページ",
-    "coverage.detail": "ファイル詳細ページ",
-    "coverage.total": "保存済みユニーク URL",
-    "coverage.updated": "{gen} 更新",
-    "coverage.pending": "残り {n} 件が進行中",
     "status.ok": "生存",
     "status.gone": "404",
     "status.locked": "パスワード",
@@ -386,7 +362,6 @@ window.I18N = {
     "nav.search": "検索",
     "nav.delta": "未収録スペース",
     "nav.archived": "保存済み",
-    "nav.sample": "詳細",
     "nav.method": "方法",
 
     "h1": "uploader.jp / getuploader.com アーカイブ索引",
@@ -430,13 +405,14 @@ window.I18N = {
     "delta.hint": "{n} スペース · 全件は CSV にもあります",
 
     "archived.title": "保存副本があるスペース",
-    "archived.lead": "{n} スペースのファイル副本が Internet Archive に保存されています（{files} ファイル / {mb}）。sample スペースはページ単位の WARC としても保存（{warc} URL）。",
+    "archived.lead": "{n} スペースのファイル副本が Internet Archive に保存されています（{files} ファイル / {mb}）。",
     "archived.ph": "スペース名・サブドメインで絞り込み…",
     "archived.csv": "CSV をダウンロード",
     "archived.hint": "{n} スペース",
 
-    "sample.title": "詳細: sample スペース",
-    "sample.tag": "完全保存",
+    "appendix.title": "技術付録 — ひとつのスペースを端から端まで保存する方法",
+    "appendix.note": "ここで使っているのはサービス自身のデモスペース（sample）で、中身はプレースホルダ画像とテスト投稿であり、コンテンツとしての価値はありません。パスワード付きファイル、ソース側 404 の .php、0 バイトのファイルなど例外ケースが一通り揃っているため、パイプラインを最初から最後まで通して記録する例として使っています（成果の見せ場としてではありません）。",
+    "appendix.stats": "この保存に含まれるもの",
     "sample.replay": "再生 / ダウンロード",
     "sample.note": "詳細ページも一覧ページも WARC に入っているため、元の URL から当時のページを復元できます。ファイル本体は WARC には入りません（POST トークンが必要）— zip の中にあります。",
     "sample.files": "一覧のファイル数",
@@ -455,8 +431,8 @@ window.I18N = {
       "基礎リストはコミュニティ索引（uploaderjp-archive.surge.sh）。加えて検索エンジン・wiki のリンク集・共有添付から列挙。",
       "各スペースのファイル数と容量は、スペース自身のページ下部にある「統計」ブロックから取得（合計が載る唯一の場所）。",
       "走査とダウンロードは実ブラウザのセッション（CDP）経由。サイトは Cloudflare の背後にあり、ダウンロードには POST トークンが必要。",
-      "ページは WARC として保存（9,748 ユニーク URL / 9,905 応答）。各レコードに WARC-Target-URI を付け、オフセット付き CDX も生成。",
-      "元 URL の Wayback 保存は Save Page Now で申請。詳細ページ層は現在も進行中。"
+      "ページは WARC として保存し、各レコードに WARC-Target-URI を付け、オフセット付き CDX も生成。ひとつのスペースを通しで保存した例は末尾の技術付録に。",
+      "元 URL のスナップショットは Internet Archive の公開キャプチャ API で申請し、成功応答（タイムスタンプ）が返ったものだけを計上します。"
     ],
     "method.gaps": "既知の欠落",
     "method.gaps.list": [
