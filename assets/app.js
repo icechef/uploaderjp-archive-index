@@ -310,7 +310,13 @@
 
   function renderFooter() {
     byId("foot-built").textContent = t("foot.built", { gen: state.summary.generated });
-    byId("byline").innerHTML = t("byline.made", { name: state.credit }) +
+    var el = byId("byline");
+    var name = state.credit;
+    if (el.dataset.creditHref) {
+      name = '<a href="' + el.dataset.creditHref + '" target="_blank" rel="noopener noreferrer">' +
+        escapeHtml(state.credit) + "</a>";
+    }
+    el.innerHTML = t("byline.made", { name: name }) + " · " + t("byline.code") +
       ' · <a href="DATA-SOURCES.md">' + t("byline.license") + "</a>";
   }
 

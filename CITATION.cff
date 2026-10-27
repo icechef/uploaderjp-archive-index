@@ -10,6 +10,10 @@ abstract: >-
 type: dataset
 version: "2026-10-27"
 date-released: "2026-10-27"
+authors:
+  - name: "icechef"
+    alias: "icechef"
+    website: "https://github.com/icechef"
 license: MIT
 identifiers:
   - type: url
