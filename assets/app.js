@@ -42,10 +42,13 @@
 
   var CLOUD_COLOURS = ["#6cb6ff", "#7ed3a2", "#e5a54b", "#c792ea", "#ef6b6b", "#59c2d6"];
 
+  function isNarrow() { return window.innerWidth <= 700; }
+
   function tableState(name) {
     if (!state.tables[name]) {
       var d = TABLE_DEFAULTS[name];
-      state.tables[name] = { page: d.page, size: d.size, sort: d.sort, dir: d.dir };
+      // 手机端每页少一些：卡片比表格行高很多，100 条会滚到两万多像素
+      state.tables[name] = { page: d.page, size: isNarrow() ? 25 : d.size, sort: d.sort, dir: d.dir };
     }
     return state.tables[name];
   }
@@ -191,7 +194,8 @@
 
     var body = slice.map(function (rec) {
       return "<tr>" + columns.map(function (col) {
-        return '<td class="' + (col.num ? "num" : "") + (col.cls ? " " + col.cls : "") + '">' +
+        return '<td data-label="' + escapeHtml(col.label) + '" class="' +
+          (col.num ? "num" : "") + (col.cls ? " " + col.cls : "") + '">' +
           col.cell(rec) + "</td>";
       }).join("") + "</tr>";
     }).join("");
@@ -473,7 +477,7 @@
       }
       return true;
     }).map(function (r) {
-      return { k: r[0], title: r[1], files: r[2], mb: r[3], dl: r[4] };
+      return { k: r[0], title: r[1], files: r[2], mb: r[3], dl: r[4], inIndex: r[5] !== 0 };
     });
   }
 
@@ -491,10 +495,7 @@
       { key: "mb", label: t("th.size"), num: true, cell: function (r) { return size(r.mb); } },
       { key: "dl", label: t("th.downloads"), num: true, cell: function (r) { return num(r.dl); } },
       {
-        key: "inIndex", label: t("th.inindex"), cell: function (r) {
-          if (!state.atMap) return pill("…", "idle");
-          return yesNo(state.atMap.has(r.k));
-        }
+        key: "inIndex", label: t("th.inindex"), cell: function (r) { return yesNo(r.inIndex); }
       },
       {
         key: "archived", label: t("th.arch"), cell: function (r) {

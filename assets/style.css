@@ -65,7 +65,7 @@ a:hover { text-decoration: underline; }
 /* two-row header on narrow screens: brand + language on top, nav scrolling below */
 @media (max-width: 900px) {
   .site-header .wrap { height: auto; padding: 10px 0 8px; flex-wrap: wrap; row-gap: 8px; }
-  .brand { max-width: calc(100% - 128px); }
+  .brand { max-width: calc(100% - 172px); }
   .site-nav { order: 3; width: 100%; margin-left: 0; padding-bottom: 2px; }
   .lang-switch { margin-left: auto; }
   h1 { font-size: clamp(21px, 5.2vw, 30px); }
@@ -130,6 +130,7 @@ select, .btn {
 
 /* ---------- tables ---------- */
 .scroll { max-height: 620px; overflow: auto; border: 1px solid var(--line); border-radius: 10px; }
+.scroll--tall { max-height: 680px; }
 table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
 th, td { text-align: left; padding: 7px 9px; border-bottom: 1px solid #212733; }
 th {
@@ -272,3 +273,50 @@ th.sorted .sort-ind { opacity: 1; color: var(--accent); }
 .appendix > summary::before { content: "▸ "; color: var(--accent); }
 .appendix[open] > summary { color: var(--fg); }
 .appendix[open] > summary::before { content: "▾ "; }
+
+/* ---------- mobile: tables become cards ---------- */
+@media (max-width: 700px) {
+  .scroll, .scroll--tall { max-height: none; border: 0; overflow: visible; }
+  table, thead, tbody, tr, th, td { display: block; }
+  thead { display: none; }
+  tbody tr {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px 12px; margin: 0 0 10px;
+  }
+  tbody td {
+    border: 0; padding: 3px 0; display: flex; gap: 10px; align-items: baseline;
+    font-size: 13.5px; text-align: left;
+  }
+  tbody td::before {
+    content: attr(data-label); flex: 0 0 84px; color: var(--dim);
+    font-size: 11.5px; line-height: 1.5;
+  }
+  tbody td.num { text-align: left; }
+  tbody td[data-label=""]::before, tbody td:not([data-label])::before { content: none; }
+  /* the space key acts as the card title: no label, slightly larger, wraps freely */
+  tbody td:first-child::before { display: none; }
+  tbody td:first-child { font-size: 14px; padding-bottom: 6px; }
+  tbody td:first-child a { white-space: normal; }
+  .title-cell { max-width: none; }
+
+  .site-nav { gap: 12px; font-size: 13px; }
+  .site-header .wrap { position: relative; }
+  .site-header .wrap::after {
+    content: ""; position: absolute; right: 0; top: 44px; bottom: 6px; width: 22px;
+    background: linear-gradient(90deg, transparent, rgba(15,17,21,.95)); pointer-events: none;
+  }
+  .pager { margin: 10px 0 2px; }
+}
+
+/* anchors must not hide under the sticky header */
+section[id], [id="appendix"] { scroll-margin-top: 72px; }
+@media (max-width: 900px) { section[id] { scroll-margin-top: 108px; } }
+
+/* ---------- mobile: compact pager ---------- */
+@media (max-width: 700px) {
+  .lang-switch button { padding: 3px 7px; font-size: 12px; }
+  .pager { gap: 6px; }
+  .pager .pager-info { min-width: 0; flex: 1 0 100%; order: 2; font-size: 12px; text-align: center; }
+  .pager button[data-act="first"], .pager button[data-act="last"] { display: none; }
+  .pager button { padding: 6px 11px; font-size: 12.5px; }
+}
