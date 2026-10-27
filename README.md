@@ -7,7 +7,8 @@ plus what has actually been archived.
 **Live site**: enable GitHub Pages for this repository (see [Deploy](#deploy)) — the page is fully
 static, needs no build step and has no tracking.
 
-Maintained by [@icechef](https://github.com/icechef) · corrections and additions are welcome via GitHub Issues.
+Maintained by [@icechef](https://github.com/icechef) · corrections and additions are welcome via
+[GitHub Issues](https://github.com/icechef/uploaderjp-archive-index/issues).
 
 [简体中文](#中文) · [日本語](#日本語) · [English](#english)
 
@@ -90,7 +91,7 @@ the easiest to merge.
 （已知 35,471 文件 / 159.8 GB，抽 30 个验证约 83% 真实存活）；扫描 2,526 个空间；其中有下载副本的是
 **506 个空间 / 26,922 文件 / 83.2 GB**；另有 `sample` 空间的整站页面存档（9,748 URL / 9,905 响应 / 83 MB WARC）。
 
-维护者：[@icechef](https://github.com/icechef) · 纠错与补充请提 GitHub Issue。
+维护者：[@icechef](https://github.com/icechef) · 纠错与补充请提 [GitHub Issue](https://github.com/icechef/uploaderjp-archive-index/issues)。
 
 许可：代码 MIT；**数据不重新授权**，来源与许可逐项见 [DATA-SOURCES.md](DATA-SOURCES.md)。
 
@@ -108,7 +109,7 @@ the easiest to merge.
 ③ **ワードクラウド** タイトルから抽出した 160 語（置き場・倉庫・素材・音源・立ち絵・MUGEN・東方・太鼓 …）
 をクリックするとカタログが絞り込まれます。
 
-* 維持・整理: [@icechef](https://github.com/icechef)（訂正・追加は GitHub Issues まで）
+* 維持・整理: [@icechef](https://github.com/icechef)（訂正・追加は [GitHub Issues](https://github.com/icechef/uploaderjp-archive-index/issues) まで）
 * データ項目の説明は [data/README.md](data/README.md)
 * 出典・ライセンスは [DATA-SOURCES.md](DATA-SOURCES.md)
 * コードは MIT（[LICENSE](LICENSE)）、データは再ライセンスしていません

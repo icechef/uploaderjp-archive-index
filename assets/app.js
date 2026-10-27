@@ -316,7 +316,10 @@
       name = '<a href="' + el.dataset.creditHref + '" target="_blank" rel="noopener noreferrer">' +
         escapeHtml(state.credit) + "</a>";
     }
-    el.innerHTML = t("byline.made", { name: name }) + " · " + t("byline.code") +
+    var issuesHref = el.dataset.issuesHref || "https://github.com/icechef/uploaderjp-archive-index/issues";
+    var issues = '<a href="' + issuesHref + '" target="_blank" rel="noopener noreferrer">' +
+      t("byline.issues") + "</a>";
+    el.innerHTML = t("byline.made", { name: name, issues: issues }) + " · " + t("byline.code") +
       ' · <a href="DATA-SOURCES.md">' + t("byline.license") + "</a>";
   }
 
