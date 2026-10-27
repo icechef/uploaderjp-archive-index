@@ -24,6 +24,8 @@
     delta: [],                  // { k, u, f, mb, st, ar }
     archived: [],               // { k, u, f, mb, dl, st }
     archivedKeys: new Set(),
+    coverage: null,
+    credit: "uploaderjp archive index",
     catalog: [],                // [key, title, files, mb, downloads]
     catalogLoaded: false,
     catalogLoading: false,
@@ -91,6 +93,7 @@
       renderSample();
       renderProse();
       renderFooter();
+      renderCoverage();
       renderSearch();
       renderDelta();
       renderArchived();
@@ -290,7 +293,7 @@
       ["sample.zero", s.zero_byte]
     ];
     byId("sample-kv").innerHTML = rows.map(function (r) {
-      return "<b>" + t(r[0]) + "</b><span>" + r[1] + "</span>";
+      return '<div class="stat"><b>' + r[1] + "</b><span>" + t(r[0]) + "</span></div>";
     }).join("");
     byId("link-warc-item").href = state.summary.items.warc;
     byId("link-files-item").href = state.summary.items.files;
@@ -309,6 +312,28 @@
 
   function renderFooter() {
     byId("foot-built").textContent = t("foot.built", { gen: state.summary.generated });
+    byId("byline").innerHTML = t("byline.made", { name: state.credit }) +
+      ' · <a href="DATA-SOURCES.md">' + t("byline.license") + "</a>";
+  }
+
+  function renderCoverage() {
+    var c = state.coverage;
+    if (!c) return;
+    var labels = { list: "coverage.list", detail: "coverage.detail" };
+    byId("coverage-updated").textContent = t("coverage.updated", { gen: c.generated });
+    byId("coverage-bars").innerHTML = c.layers.map(function (layer) {
+      var pct = layer.expected ? (layer.done / layer.expected) * 100 : 0;
+      var cls = pct >= 100 ? "cov-fill cov-fill--done" : "cov-fill";
+      return '<div class="cov-row">' +
+        '<div class="cov-head"><b>' + t(labels[layer.key] || layer.key) + "</b>" +
+        "<span>" + num(layer.done) + " / " + num(layer.expected) + " · " + pct.toFixed(1) + "%</span></div>" +
+        '<div class="cov-track"><div class="' + cls + '" style="width:' + Math.min(100, pct).toFixed(1) + '%"></div></div>' +
+        "</div>";
+    }).join("");
+    var pending = c.total.pending || 0;
+    byId("coverage-status").textContent =
+      t("coverage.total") + ": " + num(c.total.done) + " / " + num(c.total.expected) +
+      (pending ? " · " + t("coverage.pending", { n: num(pending) }) : "");
   }
 
   /* ---------------- search (community index + delta) ---------------- */
@@ -378,11 +403,45 @@
     });
   }
 
+  function skeletonRows(cols) {
+    var row = '<tr class="skeleton"><td colspan="' + cols + '"><span></span></td></tr>';
+    return new Array(8).join(row) + row;
+  }
+
+  /** fetch JSON 但把下载进度报出来（catalog.json 有 7 MB，干等 1-2 秒很难受） */
+  function fetchJsonProgress(path, onProgress) {
+    return fetch(path, { cache: "no-cache" }).then(function (res) {
+      if (!res.ok) throw new Error(path + " → HTTP " + res.status);
+      var total = Number(res.headers.get("content-length") || 0);
+      if (!res.body || !total || !window.TextDecoder) return res.json();
+      var reader = res.body.getReader();
+      var chunks = [], received = 0;
+      function pump() {
+        return reader.read().then(function (step) {
+          if (step.done) {
+            var buf = new Uint8Array(received), offset = 0;
+            chunks.forEach(function (c) { buf.set(c, offset); offset += c.length; });
+            return JSON.parse(new TextDecoder().decode(buf));
+          }
+          chunks.push(step.value);
+          received += step.value.length;
+          onProgress(Math.min(99, Math.round((received / total) * 100)));
+          return pump();
+        });
+      }
+      return pump();
+    });
+  }
+
   function loadCatalog() {
     if (state.catalogLoaded || state.catalogLoading) return;
     state.catalogLoading = true;
-    byId("catalog-status").textContent = t("catalog.loading", { n: "133,981" });
-    fetchJson("data/catalog.json").then(function (payload) {
+    byId("catalog-table").innerHTML = "<thead><tr><th>" + t("th.space") + "</th></tr></thead><tbody>" +
+      skeletonRows(1) + "</tbody>";
+    byId("catalog-status").textContent = t("catalog.loading.pct", { pct: 0 });
+    fetchJsonProgress("data/catalog.json", function (pct) {
+      byId("catalog-status").textContent = t("catalog.loading.pct", { pct: pct });
+    }).then(function (payload) {
       state.catalog = payload.rows;
       state.catalogLoaded = true;
       state.catalogLoading = false;
@@ -460,6 +519,39 @@
     byId("catalog-status").textContent = records.length
       ? t("catalog.hint", { n: num(records.length) })
       : t("catalog.empty");
+  }
+
+  function exportCsv() {
+    var records = catalogLoadedRecords();
+    // 社群索引是懒加载的：还没载入时就不写这一列，避免把 "unknown" 当成数据导出去
+    var withIndex = !!state.atMap;
+    var head = ["space", "title", "files", "size_mb", "downloads"];
+    if (withIndex) head.push("in_community_index");
+    head.push("archived_copy");
+    var lines = [head.join(",")];
+    records.forEach(function (r) {
+      var row = [r.k, quote(r.title || ""), r.files, r.mb, r.dl];
+      if (withIndex) row.push(state.atMap.has(r.k) ? "yes" : "no");
+      row.push(state.archivedKeys.has(r.k) ? "yes" : "no");
+      lines.push(row.join(","));
+    });
+    var blob = new Blob(["\ufeff" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
+    var link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "uploaderjp-catalog-" + new Date().toISOString().slice(0, 10) + ".csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(function () { URL.revokeObjectURL(link.href); }, 2000);
+
+    function quote(value) {
+      var s = String(value);
+      return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    }
+  }
+
+  function catalogLoadedRecords() {
+    return state.catalogLoaded ? catalogRecords() : [];
   }
 
   function renderCloud() {
@@ -600,6 +692,7 @@
     byId("catalog-sub").addEventListener("change", function () { tableState("catalog").page = 0; renderCatalog(); });
     byId("catalog-archived").addEventListener("change", function () { tableState("catalog").page = 0; renderCatalog(); });
     byId("catalog-big").addEventListener("change", function () { tableState("catalog").page = 0; renderCatalog(); });
+    byId("catalog-export").addEventListener("click", exportCsv);
 
     if ("IntersectionObserver" in window) {
       // 只为云图兜底（云图本身已首屏加载）；目录体积 7 MB，必须由显式操作触发：
@@ -622,17 +715,21 @@
       });
     });
 
+    var creditEl = byId("byline");
+    if (creditEl && creditEl.dataset.credit) state.credit = creditEl.dataset.credit;
     applyI18n();
     if (params.get("cat") || location.hash === "#catalog" || location.hash === "#cloud") loadCatalog();
 
     Promise.all([
       fetchJson("data/summary.json"),
       fetchJson("data/delta.json"),
-      fetchJson("data/archived.json")
+      fetchJson("data/archived.json"),
+      fetchJson("data/coverage.json")
     ]).then(function (results) {
       state.summary = results[0];
       state.delta = results[1].rows;
       state.archived = results[2].rows;
+      state.coverage = results[3];
       state.delta.forEach(function (d) { if (d.ar) state.archivedKeys.add(d.k); });
       state.archived.forEach(function (a) { state.archivedKeys.add(a.k); });
       applyI18n();

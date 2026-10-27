@@ -69,7 +69,7 @@ code {
 pre {
   background: #0b0e12; border: 1px solid var(--line); border-radius: 9px;
   padding: 12px 14px; overflow: auto; font-size: 12.5px;
-  max-width: 100%; white-space: pre-wrap; word-break: break-word;
+  max-width: 100%;
 }
 
 /* ---------- cards ---------- */
@@ -193,3 +193,60 @@ th.sorted .sort-ind { opacity: 1; color: var(--accent); }
   .kv--sources { grid-template-columns: 1fr; gap: 2px; }
   .kv--sources b { margin-top: 8px; }
 }
+
+/* ---------- horizontal stat chips (replaces the old vertical key/value list) ---------- */
+.stat-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: 10px; margin: 14px 0 4px;
+}
+.stat {
+  background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+  padding: 10px 13px;
+}
+.stat b { display: block; font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.stat span { display: block; margin-top: 1px; color: var(--dim); font-size: 12px; }
+
+/* ---------- command blocks: keep URLs on one line, scroll instead of stacking ---------- */
+.cmd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+@media (max-width: 820px) { .cmd-grid { grid-template-columns: 1fr; } }
+.cmd {
+  background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 13px;
+  min-width: 0;
+}
+.cmd b { display: block; color: var(--dim); font-weight: 500; font-size: 12px; margin-bottom: 6px; }
+.cmd code {
+  display: block; background: #0b0e12; border: 1px solid var(--line); border-radius: 7px;
+  padding: 8px 10px; overflow-x: auto; white-space: pre; font-size: 12px;
+}
+
+/* ---------- method / gaps panels ---------- */
+.panel {
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 14px 18px; min-width: 0;
+}
+.panel h3 { margin: 0 0 8px; }
+.steps, .gaps { margin: 0; padding-left: 20px; font-size: 13.5px; }
+.steps li, .gaps li { margin: 6px 0; }
+.gaps li::marker { color: var(--warn); }
+.steps li::marker { color: var(--accent); font-weight: 600; }
+
+/* ---------- coverage bars ---------- */
+.cov { display: grid; gap: 12px; margin: 12px 0 4px; }
+.cov-row { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px; }
+.cov-row .cov-head { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; margin-bottom: 7px; }
+.cov-row .cov-head b { font-weight: 500; }
+.cov-row .cov-head span { color: var(--dim); font-variant-numeric: tabular-nums; }
+.cov-track { height: 8px; background: #0b0e12; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.cov-fill { height: 100%; background: linear-gradient(90deg, #4f9bea, #6cb6ff); }
+.cov-fill--done { background: linear-gradient(90deg, #3f9e5a, #5ec26a); }
+
+/* ---------- skeleton rows while the catalog streams in ---------- */
+.skeleton span {
+  display: inline-block; height: 10px; border-radius: 4px;
+  background: linear-gradient(90deg, #1d232c, #26303b, #1d232c);
+  background-size: 200% 100%; animation: shimmer 1.2s linear infinite; width: 62%;
+}
+@keyframes shimmer { from { background-position: 200% 0 } to { background-position: -200% 0 } }
+
+/* ---------- byline ---------- */
+.byline { color: var(--dim); font-size: 12.5px; }

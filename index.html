@@ -43,6 +43,7 @@
         <a href="#cloud" data-i18n="nav.cloud">Word cloud</a>
         <a href="#delta" data-i18n="nav.delta">Missed spaces</a>
         <a href="#archived" data-i18n="nav.archived">Archived</a>
+        <a href="#coverage" data-i18n="nav.coverage">Coverage</a>
         <a href="#sample" data-i18n="nav.sample">Deep dive</a>
         <a href="#method" data-i18n="nav.method">Method</a>
       </nav>
@@ -89,6 +90,7 @@
       <div class="toolbar">
         <label class="visually-hidden" for="catalog-query">Catalog search</label>
         <input type="search" id="catalog-query" data-i18n-ph="catalog.ph" autocomplete="off">
+        <button type="button" class="btn" id="catalog-export" data-i18n="catalog.export">Export this view (CSV)</button>
         <label class="visually-hidden" for="catalog-sub">Subdomain</label>
         <select id="catalog-sub"><option value="" data-i18n="catalog.allsub">All subdomains</option></select>
         <label class="pill" style="cursor:pointer"><input type="checkbox" id="catalog-archived" style="vertical-align:-2px"> <span data-i18n="catalog.onlyarch">archived only</span></label>
@@ -142,38 +144,44 @@
       <div class="pager" id="archived-pager"></div>
     </section>
 
+    <section id="coverage" aria-labelledby="coverage-title">
+      <h2 id="coverage-title"><span data-i18n="coverage.title">Wayback coverage</span><span class="tag" id="coverage-updated"></span></h2>
+      <p class="lead" data-i18n="coverage.lead"></p>
+      <div id="coverage-bars" class="cov"></div>
+      <p class="status" id="coverage-status"></p>
+    </section>
+
     <section id="sample" aria-labelledby="sample-title">
       <h2 id="sample-title"><span data-i18n="sample.title">Deep dive: the sample space</span><span class="tag" data-i18n="sample.tag">complete archive</span></h2>
-      <div class="grid-2">
-        <div>
-          <div class="kv" id="sample-kv"></div>
-          <div class="note note--ok" data-i18n="sample.note"></div>
+      <div class="stat-grid" id="sample-kv"></div>
+      <div class="note note--ok" data-i18n="sample.note"></div>
+      <h3 style="margin-top:18px" data-i18n="sample.replay">Replay / download</h3>
+      <div class="cmd-grid">
+        <div class="cmd">
+          <b data-i18n="sample.cmd.replay">Replay a WARC part in the browser</b>
+          <code class="mono">https://replayweb.page/?source=https://archive.org/download/u1-getuploader-sample-warc-20261026/&lt;part&gt;.warc.gz</code>
         </div>
-        <div>
-          <h3 data-i18n="sample.replay">Replay / download</h3>
-          <pre><a id="link-warc-item" href="https://archive.org/details/u1-getuploader-sample-warc-20261026" target="_blank" rel="noopener noreferrer">WARC item (pages)</a>
-<a id="link-files-item" href="https://archive.org/details/u1-getuploader-sample-archive" target="_blank" rel="noopener noreferrer">files item (zip + index)</a>
-
-# replay a WARC part in the browser
-https://replayweb.page/?source=https://archive.org/download/
-  u1-getuploader-sample-warc-20261026/&lt;part&gt;.warc.gz
-
-# resolve an original URL locally
-grep "download/1234" cdx_offsets.jsonl   # → offset/length, then seek</pre>
+        <div class="cmd">
+          <b data-i18n="sample.cmd.lookup">Resolve an original URL locally</b>
+          <code class="mono">grep "download/1234" cdx_offsets.jsonl</code>
         </div>
+      </div>
+      <div class="toolbar">
+        <a class="btn" id="link-warc-item" target="_blank" rel="noopener noreferrer" data-i18n="sample.link.warc">WARC item (pages)</a>
+        <a class="btn" id="link-files-item" target="_blank" rel="noopener noreferrer" data-i18n="sample.link.files">Files item (zip + index)</a>
       </div>
     </section>
 
     <section id="method" aria-labelledby="method-title">
       <h2 id="method-title" data-i18n="method.title">Method, gaps and caveats</h2>
-      <div class="grid-2">
-        <div>
-          <h3 data-i18n="method.how">How this was built</h3>
-          <ul class="clean" data-i18n-list="method.how.list"></ul>
+      <div class="grid-2 grid-2--cards">
+        <div class="panel">
+          <h3 data-i18n="method.how">How the index was built</h3>
+          <ol class="steps" data-i18n-list="method.how.list"></ol>
         </div>
-        <div>
+        <div class="panel">
           <h3 data-i18n="method.gaps">Known gaps</h3>
-          <ul class="clean" data-i18n-list="method.gaps.list"></ul>
+          <ul class="gaps" data-i18n-list="method.gaps.list"></ul>
         </div>
       </div>
       <div class="note" id="credits"></div>
@@ -217,6 +225,7 @@ grep "download/1234" cdx_offsets.jsonl   # → offset/length, then seek</pre>
         <a href="data/summary.json">summary.json</a>
       </p>
       <p><a href="DATA-SOURCES.md" data-i18n="source.note">Sources and licences</a></p>
+      <p class="byline" id="byline" data-credit="uploaderjp archive index"></p>
     </div>
   </footer>
 
